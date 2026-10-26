@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>PROJECT LELO | MISSION 25</title>
+
+  <meta
+    name="description"
+    content="A birthday mission celebrating Mbulelo's 25th year."
+  >
+
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+  <main class="app">
+
+    <!-- Mission 00: Boot sequence -->
+    <section id="boot-screen" class="screen">
+      <header class="window-header">
+        <span class="window-dot red"></span>
+        <span class="window-dot yellow"></span>
+        <span class="window-dot green"></span>
+        <span class="window-title">
+          birthday_v2.5.py — PROJECT LELO
+        </span>
+      </header>
+
+      <div class="boot-content">
+        <p class="terminal-label">
+          INITIALIZING BIRTHDAY PROTOCOL...
+        </p>
+
+        <h1>PROJECT <span>LELO</span></h1>
+
+        <p class="subtitle">MISSION 25: STILL IN DEVELOPMENT.</p>
+
+        <div class="terminal-output">
+          <p><span class="prompt">&gt;&gt;&gt;</span> identify_subject()</p>
+          <p>Subject: Mbulelo</p>
+          <p>Age: 25</p>
+          <p>Curiosity: LIMITLESS</p>
+          <p>Next chapter: LOADING...</p>
+        </div>
+
+        <button id="start-mission" class="primary-button">
+          RUN MISSION <span aria-hidden="true">→</span>
+        </button>
+
+        <p class="small-note">
+          A birthday experience compiled with care.
+        </p>
+      </div>
+    </section>
+
+    <!-- The mission interface -->
+    <section id="mission-screen" class="screen" hidden>
+      <header class="window-header">
+        <span class="window-dot red"></span>
+        <span class="window-dot yellow"></span>
+        <span class="window-dot green"></span>
+        <span class="window-title">mission_control.exe</span>
+      </header>
+
+      <nav class="mission-nav" aria-label="Mission progress">
+        <p id="mission-counter">MISSION 01 / 06</p>
+
+        <div class="progress-track">
+          <div id="progress-bar" class="progress-bar"></div>
+        </div>
+      </nav>
+
+      <section id="mission-content" class="mission-content">
+        <p class="terminal-label">SYSTEM READY</p>
+        <h2>Welcome, Lelo.</h2>
+
+        <p>
+          Your birthday mission is ready.
+          Six objectives await. Your next chapter starts here.
+        </p>
+
+        <button id="next-mission" class="primary-button">
+          BEGIN OBJECTIVE 01 →
+        </button>
+      </section>
+
+      <footer class="status-bar">
+        <span>PROJECT LELO</span>
+        <span>VERSION 2.5</span>
+        <span>ALL SYSTEMS GO</span>
+      </footer>
+    </section>
+
+    <div id="confetti-container" aria-hidden="true"></div>
+
+  </main>
+</body>
+</html>
