@@ -1141,3 +1141,51 @@ a:focus-visible {
 .objective-item.completed .objective-number {
   color: var(--green);
 }
+
+.initialization-form {
+  display: grid;
+  gap: 10px;
+  margin: 24px 0;
+}
+
+.initialization-form label {
+  color: var(--green);
+  font-family: monospace;
+  font-size: 13px;
+}
+
+.initialization-form input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border: 1px solid var(--border-bright);
+  border-radius: 8px;
+  background: #0d1117;
+  color: #e6edf3;
+  font: inherit;
+  outline: none;
+}
+
+.initialization-form input:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 2px rgba(98, 217, 149, 0.12);
+}
+
+.initialization-form .primary-button {
+  margin-top: 12px;
+}
+
+.typing-cursor {
+  color: var(--green);
+  animation: terminalBlink 1s steps(2, start) infinite;
+}
+
+@keyframes terminalBlink {
+  to {
+    visibility: hidden;
+  }
+}
+
+.initialization-form[hidden] {
+  display: none;
+}
