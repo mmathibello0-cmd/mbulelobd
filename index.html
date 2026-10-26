@@ -11,6 +11,7 @@
     name="description"
     content="A birthday mission celebrating Mbulelo's 25th year."
   >
+  <meta name="theme-color" content="#0d1117">
 
   <link rel="stylesheet" href="style.css">
   <script src="script.js" defer></script>
@@ -19,7 +20,10 @@
 <body>
   <main class="app">
 
-    <!-- Mission 00: Boot sequence -->
+    <!-- =====================================
+         MISSION 00: BOOT SEQUENCE
+    ====================================== -->
+
     <section id="boot-screen" class="screen">
       <header class="window-header">
         <span class="window-dot red"></span>
@@ -32,19 +36,36 @@
 
       <div class="boot-content">
         <p class="terminal-label">
-          INITIALIZING BIRTHDAY PROTOCOL...
+          SYSTEM.BOOT // BIRTHDAY PROTOCOL
         </p>
+
+        <p class="eyebrow">A SPECIAL OPERATION</p>
 
         <h1>PROJECT <span>LELO</span></h1>
 
-        <p class="subtitle">MISSION 25: STILL IN DEVELOPMENT.</p>
+        <p class="subtitle">
+          MISSION 25: STILL IN DEVELOPMENT.
+        </p>
+
+        <p class="intro-copy">
+          Twenty-five years of evolution.
+          A lifetime of possibilities.
+          One new chapter waiting to be explored.
+        </p>
 
         <div class="terminal-output">
-          <p><span class="prompt">&gt;&gt;&gt;</span> identify_subject()</p>
-          <p>Subject: Mbulelo</p>
-          <p>Age: 25</p>
-          <p>Curiosity: LIMITLESS</p>
-          <p>Next chapter: LOADING...</p>
+          <p><span class="prompt">&gt;&gt;&gt;</span> initialize_mission()</p>
+          <p><span class="code-purple">subject</span> = "Mbulelo"</p>
+          <p><span class="code-purple">version</span> = 2.5</p>
+          <p><span class="code-purple">curiosity</span> = "LIMITLESS"</p>
+          <p><span class="code-purple">potential</span> = "STILL LOADING"</p>
+          <p class="success-line">[SUCCESS] Birthday protocol located.</p>
+        </div>
+
+        <div class="boot-meta">
+          <span>STATUS: READY</span>
+          <span>ACCESS: AUTHORISED</span>
+          <span>SUBJECT: LELO</span>
         </div>
 
         <button id="start-mission" class="primary-button">
@@ -57,24 +78,104 @@
       </div>
     </section>
 
-    <!-- The mission interface -->
+
+    <!-- =====================================
+         MAIN MISSION CONTROL
+    ====================================== -->
+
     <section id="mission-screen" class="screen" hidden>
+
       <header class="window-header">
         <span class="window-dot red"></span>
         <span class="window-dot yellow"></span>
         <span class="window-dot green"></span>
-        <span class="window-title">mission_control.exe</span>
+        <span class="window-title">
+          mission_control.exe — PROJECT LELO
+        </span>
       </header>
 
-      <nav class="mission-nav" aria-label="Mission progress">
-        <p id="mission-counter">MISSION 01 / 06</p>
+      <div class="dashboard-header">
+        <div>
+          <p class="terminal-label">PROJECT LELO // PRIVATE BUILD</p>
+          <h2 class="dashboard-title">Mission Control<span>.</span></h2>
+          <p class="dashboard-subtitle">
+            Six objectives. One birthday. Unlimited potential.
+          </p>
+        </div>
 
-        <div class="progress-track">
+        <div class="version-card">
+          <span class="version-label">CURRENT BUILD</span>
+          <strong>v2.5</strong>
+          <span class="version-status">
+            <span class="status-indicator"></span>
+            RUNNING
+          </span>
+        </div>
+      </div>
+
+      <nav class="mission-nav" aria-label="Mission progress">
+        <div class="mission-nav-top">
+          <p id="mission-counter">MISSION 01 / 06</p>
+          <p id="progress-text">0% COMPLETE</p>
+        </div>
+
+        <div
+          class="progress-track"
+          role="progressbar"
+          aria-label="Birthday mission progress"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="0"
+          id="progress-track"
+        >
           <div id="progress-bar" class="progress-bar"></div>
         </div>
       </nav>
 
-      <section id="mission-content" class="mission-content">
+      <!-- Mission shortcuts -->
+      <nav class="objective-list" aria-label="Mission objectives">
+        <p class="objective-heading">MISSION OBJECTIVES</p>
+
+        <div class="objective-grid">
+          <div class="objective-item" data-objective="0">
+            <span class="objective-number">01</span>
+            <span class="objective-name">Decode 2001</span>
+          </div>
+
+          <div class="objective-item" data-objective="1">
+            <span class="objective-number">02</span>
+            <span class="objective-name">Subject Analysis</span>
+          </div>
+
+          <div class="objective-item" data-objective="2">
+            <span class="objective-number">03</span>
+            <span class="objective-name">Soundtrack</span>
+          </div>
+
+          <div class="objective-item" data-objective="3">
+            <span class="objective-number">04</span>
+            <span class="objective-name">Medulla Incident</span>
+          </div>
+
+          <div class="objective-item" data-objective="4">
+            <span class="objective-number">05</span>
+            <span class="objective-name">Next Chapter</span>
+          </div>
+
+          <div class="objective-item" data-objective="5">
+            <span class="objective-number">06</span>
+            <span class="objective-name">Birthday Unlock</span>
+          </div>
+        </div>
+      </nav>
+
+      <!-- JavaScript renders each mission here -->
+      <section
+        id="mission-content"
+        class="mission-content"
+        aria-live="polite"
+        aria-atomic="true"
+      >
         <p class="terminal-label">SYSTEM READY</p>
         <h2>Welcome, Lelo.</h2>
 
@@ -91,11 +192,18 @@
       <footer class="status-bar">
         <span>PROJECT LELO</span>
         <span>VERSION 2.5</span>
-        <span>ALL SYSTEMS GO</span>
+        <span id="system-status">ALL SYSTEMS GO</span>
       </footer>
     </section>
 
-    <div id="confetti-container" aria-hidden="true"></div>
+    <!-- =====================================
+         CELEBRATION LAYER
+    ====================================== -->
+
+    <div
+      id="confetti-container"
+      aria-hidden="true"
+    ></div>
 
   </main>
 </body>
