@@ -35,32 +35,81 @@
       </header>
 
       <div class="boot-content">
-        <p class="terminal-label">
-          SYSTEM.BOOT // BIRTHDAY PROTOCOL
-        </p>
-
-        <p class="eyebrow">A SPECIAL OPERATION</p>
-
-        <h1>PROJECT <span>LELO</span></h1>
-
-        <p class="subtitle">
-          MISSION 25: STILL IN DEVELOPMENT.
-        </p>
-
-        <p class="intro-copy">
-          Twenty-five years of evolution.
-          A lifetime of possibilities.
-          One new chapter waiting to be explored.
-        </p>
-
-        <div class="terminal-output">
        
-<div class="terminal-output" id="terminal-output">
+<p class="terminal-label">
+  SYSTEM.BOOT // BIRTHDAY PROTOCOL
+</p>
+
+<p class="eyebrow">A SPECIAL OPERATION</p>
+
+<h1>PROJECT <span>LELO</span></h1>
+
+<p class="subtitle">
+  MISSION 25: STILL IN DEVELOPMENT.
+</p>
+
+<p class="intro-copy">
+  Twenty-five years of evolution.
+  A lifetime of possibilities.
+  One new chapter waiting to be explored.
+</p>
+
+<div class="terminal-output" id="terminal-output" aria-live="polite">
   <p class="terminal-label">SYSTEM INITIALIZATION</p>
   <p>
     <span class="prompt">&gt;&gt;&gt;</span>
     Awaiting subject input<span class="typing-cursor">_</span>
   </p>
+</div>
+
+<form id="initialization-form" class="initialization-form">
+  <label for="subject-name">Enter your name</label>
+  <input
+    id="subject-name"
+    name="subject-name"
+    type="text"
+    placeholder="Your name..."
+    autocomplete="given-name"
+    maxlength="40"
+    required
+  >
+
+  <label for="subject-age">Enter your current age</label>
+  <input
+    id="subject-age"
+    name="subject-age"
+    type="number"
+    placeholder="Your age..."
+    min="1"
+    max="120"
+    required
+  >
+
+  <button type="submit" class="primary-button">
+    INITIALIZE MISSION →
+  </button>
+</form>
+
+<div class="boot-meta">
+  <span>STATUS: READY</span>
+  <span>ACCESS: AUTHORISED</span>
+  <span>SUBJECT: LELO</span>
+</div>
+
+<button
+  id="start-mission"
+  class="primary-button"
+  type="button"
+  hidden
+  disabled
+>
+  RUN MISSION <span aria-hidden="true">→</span>
+</button>
+
+<p class="small-note">
+  A birthday experience compiled with care.
+</p>
+
 </div>
 
 <form id="initialization-form" class="initialization-form">
@@ -168,57 +217,56 @@
         <p class="objective-heading">MISSION OBJECTIVES</p>
 
         <div class="objective-grid">
-          <div class="objective-item" data-objective="0">
-            <span class="objective-number">01</span>
-            <span class="objective-name">Decode 2001</span>
-          </div>
+       
+<div class="objective-item" data-objective="0" role="button" tabindex="0">
+  <span class="objective-number">01</span>
+  <span class="objective-name">Data Acquisition</span>
+</div>
 
-          <div class="objective-item" data-objective="1">
-            <span class="objective-number">02</span>
-            <span class="objective-name">Subject Analysis</span>
-          </div>
+<div class="objective-item" data-objective="1" role="button" tabindex="0">
+  <span class="objective-number">02</span>
+  <span class="objective-name">Data Cleaning &amp; EDA</span>
+</div>
 
-          <div class="objective-item" data-objective="2">
-            <span class="objective-number">03</span>
-            <span class="objective-name">Soundtrack</span>
-          </div>
+<div class="objective-item" data-objective="2" role="button" tabindex="0">
+  <span class="objective-number">03</span>
+  <span class="objective-name">Data Visualisation</span>
+</div>
 
-          <div class="objective-item" data-objective="3">
-            <span class="objective-number">04</span>
-            <span class="objective-name">Medulla Incident</span>
-          </div>
+<div class="objective-item" data-objective="3" role="button" tabindex="0">
+  <span class="objective-number">04</span>
+  <span class="objective-name">Model Evaluation</span>
+</div>
 
-          <div class="objective-item" data-objective="4">
-            <span class="objective-number">05</span>
-            <span class="objective-name">Next Chapter</span>
-          </div>
+<div class="objective-item" data-objective="4" role="button" tabindex="0">
+  <span class="objective-number">05</span>
+  <span class="objective-name">Interpretation &amp; Insights</span>
+</div>
 
-          <div class="objective-item" data-objective="5">
-            <span class="objective-number">06</span>
-            <span class="objective-name">Birthday Unlock</span>
-          </div>
+<div class="objective-item" data-objective="5" role="button" tabindex="0">
+  <span class="objective-number">06</span>
+  <span class="objective-name">Final Birthday Report</span>
+</div>
+
         </div>
       </nav>
 
       <!-- JavaScript renders each mission here -->
-      <section
-        id="mission-content"
-        class="mission-content"
-        aria-live="polite"
-        aria-atomic="true"
-      >
-        <p class="terminal-label">SYSTEM READY</p>
-        <h2>Welcome, Lelo.</h2>
+    
+<section
+  id="mission-content"
+  class="mission-content"
+  aria-live="polite"
+  aria-atomic="true"
+>
+  <p class="terminal-label">SYSTEM READY</p>
+  <h2>Awaiting mission launch.</h2>
+  <p>
+    Initialize the subject profile to begin the six-stage
+    data science birthday experience.
+  </p>
+</section>
 
-        <p>
-          Your birthday mission is ready.
-          Six objectives await. Your next chapter starts here.
-        </p>
-
-        <button id="next-mission" class="primary-button">
-          BEGIN OBJECTIVE 01 →
-        </button>
-      </section>
 
       <footer class="status-bar">
         <span>PROJECT LELO</span>
