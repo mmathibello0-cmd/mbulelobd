@@ -164,9 +164,16 @@ function renderMission() {
     </button>
   `;
 
-  document
-    .getElementById("next-mission")
-    .addEventListener("click", advanceMission);
+  
+document
+  .getElementById("next-mission")
+  .addEventListener("click", advanceMission);
+
+// Connect the real audio player in Mission 03
+if (currentMission === 2) {
+  setupAudioPlayer();
+}
+
 }
 
 
@@ -331,14 +338,13 @@ function renderSoundtrack() {
     <h2>YOUR PERSONAL SOUNDTRACK</h2>
 
     <p>
-      Every project needs a soundtrack. This section is reserved
-      for the songs you enjoy, the ones you replay, and the ones
-      that deserve a permanent spot in the rotation.
+      Every project needs a soundtrack. This one starts with a track
+      selected for your birthday mission.
     </p>
 
     <div class="detail-card" style="margin:24px 0">
 
-      <span class="card-label">NOW LOADING</span>
+      <span class="card-label">NOW PLAYING // TRACK 001</span>
 
       <div style="
         display:flex;
@@ -363,62 +369,82 @@ function renderSoundtrack() {
         </div>
 
         <div>
-          <h3 style="font-size:17px">LELO.MIX</h3>
+          <h3 style="font-size:17px">Chrome Heart Diaper Bag</h3>
           <p style="color:var(--muted);font-size:12px">
-            Personal playlist // Track list pending
+            Latto // Audio file
           </p>
         </div>
 
       </div>
 
-      <div id="demo-waveform" aria-hidden="true" style="
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        gap:4px;
-        height:42px;
-        margin:20px 0;
-        overflow:hidden;
-      ">
-        ${createWaveform()}
-      </div>
+      <audio id="lelo-audio" preload="metadata">
+        <source
+          src="Latto - Chrome Heart Diaper Bag (Audio).mp3"
+          type="audio/mpeg"
+        >
+        Your browser does not support audio playback.
+      </audio>
 
       <button
-        id="demo-play-button"
+        id="play-audio-button"
         type="button"
         class="primary-button"
         style="width:100%"
         aria-pressed="false"
       >
-        ▶ PREVIEW VISUALIZER
+        ▶ PLAY TRACK
       </button>
 
-      <p id="demo-player-status" style="
+      <div style="margin-top:20px">
+
+        <input
+          id="audio-progress"
+          type="range"
+          min="0"
+          max="100"
+          value="0"
+          step="0.1"
+          aria-label="Song progress"
+          style="width:100%;accent-color:var(--green)"
+        >
+
+        <div style="
+          display:flex;
+          justify-content:space-between;
+          color:var(--muted);
+          font-size:11px;
+        ">
+          <span id="audio-current-time">0:00</span>
+          <span id="audio-duration">0:00</span>
+        </div>
+
+      </div>
+
+      <p id="audio-player-status" role="status" style="
         margin-top:12px;
         color:var(--muted);
         font-size:11px;
         text-align:center;
       ">
-        Visualizer preview only. No music is playing yet.
+        Ready to play. Press the button when you're ready.
       </p>
 
     </div>
 
     <div class="info-panel">
       <p>
-        <strong>PLAYLIST STATUS:</strong>
-        Waiting for the official soundtrack.
-        Once the tracks are chosen, this module can be upgraded
-        with real audio playback and track information.
+        <strong>SYSTEM NOTE:</strong>
+        Soundtrack loaded. Audio playback is controlled by the subject.
       </p>
     </div>
 
     <p>
-      A good playlist says a lot about a person.
-      Let's make sure this one actually sounds like you.
+      Every good project deserves a soundtrack.
+      Consider this the first track in the birthday edition.
     </p>
   `;
 }
+
 
 
 /* Create decorative bars for the visualizer. */
@@ -1026,6 +1052,84 @@ function updateSystemStatus(message) {
   }
 }
 
+
+function setupAudioPlayer() {
+  const audio = document.getElementById("lelo-audio");
+  const playButton = document.getElementById("play-audio-button");
+  const progress = document.getElementById("audio-progress");
+  const currentTime = document.getElementById("audio-current-time");
+  const duration = document.getElementById("audio-duration");
+  const status = document.getElementById("audio-player-status");
+
+  if (!audio || !playButton || !progress) return;
+
+  function formatTime(seconds) {
+    if (!Number.isFinite(seconds)) return "0:00";
+
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+
+    return `${mins}:${String(secs).padStart(2, "0")}`;
+  }
+
+  playButton.addEventListener("click", async () => {
+    if (audio.paused) {
+      try {
+        await audio.play();
+      } catch (error) {
+        status.textContent =
+          "Couldn't play the track. Check that the MP3 file is in the website folder.";
+      }
+    } else {
+      audio.pause();
+    }
+  });
+
+  audio.addEventListener("play", () => {
+    playButton.textContent = "Ⅱ PAUSE TRACK";
+    playButton.setAttribute("aria-pressed", "true");
+    status.textContent = "Now playing // Enjoy the soundtrack.";
+  });
+
+  audio.addEventListener("pause", () => {
+    playButton.textContent = "▶ PLAY TRACK";
+    playButton.setAttribute("aria-pressed", "false");
+
+    if (audio.currentTime < audio.duration || !Number.isFinite(audio.duration)) {
+      status.textContent = "Track paused.";
+    }
+  });
+
+  audio.addEventListener("loadedmetadata", () => {
+    duration.textContent = formatTime(audio.duration);
+  });
+
+  audio.addEventListener("timeupdate", () => {
+    currentTime.textContent = formatTime(audio.currentTime);
+
+    if (Number.isFinite(audio.duration) && audio.duration > 0) {
+      progress.value = (audio.currentTime / audio.duration) * 100;
+    }
+  });
+
+  progress.addEventListener("input", () => {
+    if (Number.isFinite(audio.duration) && audio.duration > 0) {
+      audio.currentTime = (Number(progress.value) / 100) * audio.duration;
+    }
+  });
+
+  audio.addEventListener("ended", () => {
+    playButton.textContent = "▶ PLAY AGAIN";
+    playButton.setAttribute("aria-pressed", "false");
+    progress.value = 0;
+    status.textContent = "Track complete // Replay whenever you like.";
+  });
+
+  audio.addEventListener("error", () => {
+    status.textContent =
+      "Audio unavailable. Check the MP3 filename and its location.";
+  });
+}
 
 /* ---------- 20. INITIAL STATE ---------- */
 
