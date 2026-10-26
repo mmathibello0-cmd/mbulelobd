@@ -28,6 +28,9 @@ const TOTAL_MISSIONS = 6;
 let currentMission = 0;
 let missionStarted = false;
 let missionCompleted = false;
+
+// The furthest mission the user has unlocked.
+let maxUnlockedMission = 0;
 let maturityAnswerRevealed = false;
 let isDemoPlaying = false;
 
@@ -632,6 +635,7 @@ function renderBirthdayMission() {
 
 /* ---------- 11. MISSION NAVIGATION ---------- */
 
+
 function advanceMission() {
   if (!missionStarted || missionCompleted) {
     return;
@@ -643,6 +647,13 @@ function advanceMission() {
   }
 
   currentMission += 1;
+
+  // Unlock the next objective.
+  maxUnlockedMission = Math.max(
+    maxUnlockedMission,
+    currentMission
+  );
+
   renderMission();
 
   if (currentMission === 3) {
@@ -654,6 +665,7 @@ function advanceMission() {
     block: "start"
   });
 }
+
 
 
 /* ---------- 12. PROGRESS BAR ---------- */
@@ -692,20 +704,82 @@ function updateProgress() {
 
 /* ---------- 13. OBJECTIVE INDICATORS ---------- */
 
+
 function updateObjectives() {
   objectiveItems.forEach((item, index) => {
-    item.classList.remove("active", "completed");
+    item.classList.remove("active", "completed", "locked");
 
-    if (index < currentMission) {
+    const unlocked = index <= maxUnlockedMission;
+    const completed = missionCompleted || index < currentMission;
+
+    if (completed) {
       item.classList.add("completed");
     }
 
-    if (index === currentMission) {
+    if (index === currentMission && !missionCompleted) {
       item.classList.add("active");
+    }
+
+    if (!unlocked) {
+      item.classList.add("locked");
+    }
+
+    // Give each objective accessible interactive behaviour.
+    item.setAttribute("role", "button");
+    item.setAttribute("tabindex", unlocked ? "0" : "-1");
+    item.setAttribute("aria-disabled", String(!unlocked));
+
+    const name = item.querySelector(".objective-name");
+
+    if (name) {
+      const status = completed
+        ? "completed"
+        : index === currentMission && !missionCompleted
+          ? "current mission"
+          : unlocked
+            ? "unlocked"
+            : "locked";
+
+      item.setAttribute(
+        "aria-label",
+        `${name.textContent}, ${status}`
+      );
     }
   });
 }
 
+
+function openObjective(index) {
+  if (!missionStarted || index > maxUnlockedMission) {
+    return;
+  }
+
+  // Reopen any objective that has already been unlocked.
+  currentMission = index;
+  missionCompleted = false;
+
+  renderMission();
+
+  missionContent.scrollIntoView({
+    behavior: "smooth",
+    block: "start"
+  });
+}
+
+// Mouse and touch navigation.
+objectiveItems.forEach((item, index) => {
+  item.addEventListener("click", () => {
+    openObjective(index);
+  });
+
+  // Keyboard navigation.
+  item.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      openObjective(index);
+    }
+  });
+});
 
 /* ---------- 14. BUTTON INTERACTIONS ---------- */
 
