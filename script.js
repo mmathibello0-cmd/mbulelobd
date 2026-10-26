@@ -36,7 +36,6 @@ let missionCompleted = false;
 let subjectName = "Lelo";
 let subjectAge = 25;
 let projectVersion = "2.5";
-let audioEventsAttached = false;
 
 
 /* ---------- 2. HELPER FUNCTIONS ---------- */
@@ -113,21 +112,88 @@ const missions = [
 
 /* ---------- 4. INITIALIZATION ---------- */
 
+/**
+ * Displays the initialization log one line at a time.
+ * The subject's name, age and project version are dynamic.
+ */
+async function loadTerminalLines(name, age, version) {
+  const output = document.getElementById("terminal-output");
+
+  if (!output) return;
+
+  const lines = [
+    "> Initializing PROJECT LELO...",
+    "> Loading Python environment...",
+    "> Loading R analysis modules...",
+    "> Establishing subject profile...",
+    `> Subject identified: ${name}`,
+    `> Chronological age: ${age}`,
+    `> Project version: ${version}`,
+    "> Preparing data pipeline...",
+    "> All systems ready."
+  ];
+
+  output.innerHTML = `
+    <p class="terminal-label">INITIALIZATION LOG</p>
+  `;
+
+  for (const message of lines) {
+    const line = document.createElement("p");
+
+    // textContent prevents entered names from being interpreted as HTML.
+    line.textContent = message;
+    line.style.opacity = "0";
+    line.style.transform = "translateY(5px)";
+    line.style.transition =
+      "opacity 0.25s ease, transform 0.25s ease";
+
+    output.appendChild(line);
+
+    // Allow the browser to render the new line.
+    await new Promise(resolve => {
+      requestAnimationFrame(resolve);
+    });
+
+    // Reveal the line.
+    line.style.opacity = "1";
+    line.style.transform = "translateY(0)";
+
+    // Wait before showing the next line.
+    await new Promise(resolve => {
+      setTimeout(resolve, 550);
+    });
+  }
+
+  const successLine = document.createElement("p");
+  successLine.className = "success-line";
+  successLine.textContent =
+    "[SUCCESS] Subject profile initialized.";
+
+  output.appendChild(successLine);
+}
+
 function initializeProject() {
   if (!initializationForm || !terminalOutput || !startButton) {
-    console.error("PROJECT LELO initialization elements are missing.");
+    console.error(
+      "PROJECT LELO initialization elements are missing."
+    );
     return;
   }
 
   startButton.hidden = true;
   startButton.disabled = true;
 
-  initializationForm.addEventListener("submit", event => {
+  initializationForm.addEventListener("submit", async event => {
     event.preventDefault();
+
+    const submitButton = initializationForm.querySelector(
+      'button[type="submit"]'
+    );
 
     const enteredName = String(subjectNameInput.value).trim();
     const enteredAge = Number(subjectAgeInput.value);
 
+    // Validate the submitted name and age.
     if (
       !enteredName ||
       !Number.isInteger(enteredAge) ||
@@ -139,30 +205,22 @@ function initializeProject() {
           &gt; ERROR: Enter a valid name and age.
         </p>
       `;
+
       return;
     }
 
+    // Save the subject profile.
     subjectName = enteredName.slice(0, 40);
     subjectAge = enteredAge;
     projectVersion = (enteredAge / 10).toFixed(1);
 
-    const messages = [
-      "> Initializing PROJECT LELO...",
-      "> Loading Python environment...",
-      "> Loading R analysis modules...",
-      "> Establishing subject profile...",
-      `> Subject identified: ${escapeHTML(subjectName)}`,
-      `> Chronological age: ${subjectAge}`,
-      `> Project version: ${projectVersion}`,
-      "> Preparing data pipeline...",
-      "> All systems ready."
-    ];
+    // Prevent repeated submissions while the animation runs.
+    if (submitButton) {
+      submitButton.disabled = true;
+    }
 
-    terminalOutput.innerHTML = `
-      <p class="terminal-label">INITIALIZATION LOG</p>
-      ${messages.map(message => `<p>${message}</p>`).join("")}
-      <p class="success-line">[SUCCESS] Subject profile initialized.</p>
-    `;
+    startButton.hidden = true;
+    startButton.disabled = true;
 
     const versionNumber = document.getElementById("version-number");
 
@@ -170,12 +228,21 @@ function initializeProject() {
       versionNumber.textContent = `v${projectVersion}`;
     }
 
+    updateSystemStatus("INITIALIZING PROJECT...");
+
+    // Run the loading animation before enabling the mission.
+    await loadTerminalLines(
+      subjectName,
+      subjectAge,
+      projectVersion
+    );
+
     startButton.hidden = false;
     startButton.disabled = false;
 
-    initializationForm.querySelector(
-      'button[type="submit"]'
-    ).disabled = false;
+    if (submitButton) {
+      submitButton.disabled = false;
+    }
 
     updateSystemStatus("INITIALIZATION COMPLETE");
   });
@@ -194,19 +261,28 @@ function startMission() {
   currentMission = 0;
   maxUnlockedMission = 0;
 
-  bootScreen.hidden = true;
-  missionScreen.hidden = false;
+  if (bootScreen) {
+    bootScreen.hidden = true;
+  }
+
+  if (missionScreen) {
+    missionScreen.hidden = false;
+  }
 
   updateSystemStatus("MISSION INITIALIZED");
   renderMission();
 
-  missionScreen.scrollIntoView({
-    behavior: "smooth",
-    block: "start"
-  });
+  if (missionScreen) {
+    missionScreen.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }
 }
 
-startButton.addEventListener("click", startMission);
+if (startButton) {
+  startButton.addEventListener("click", startMission);
+}
 
 
 /* ---------- 6. PROGRESS TRACKER ---------- */
@@ -252,6 +328,8 @@ function updateObjectives() {
     if (isUnlocked) {
       item.removeAttribute("tabindex");
       item.setAttribute("tabindex", "0");
+    } else {
+      item.setAttribute("tabindex", "-1");
     }
   });
 }
@@ -545,6 +623,12 @@ function createWaveform() {
   return Array.from({ length: 36 }, (_, index) => {
     const height = 8 + ((index * 17 + 11) % 35);
 
+    const colour = index % 4 === 0
+      ? "var(--purple)"
+      : index % 3 === 0
+        ? "var(--blue)"
+        : "var(--green)";
+
     return `
       <span
         class="waveform-bar"
@@ -553,13 +637,7 @@ function createWaveform() {
           flex:0 0 4px;
           height:${height}px;
           border-radius:4px;
-          background:${
-            index % 4 === 0
-              ? "var(--purple)"
-              : index % 3 === 0
-                ? "var(--blue)"
-                : "var(--green)"
-          };
+          background:${colour};
           opacity:0.8;
         "
       ></span>
@@ -707,6 +785,11 @@ function renderDataVisualisation() {
 
 /* ---------- 11. AUDIO PLAYER ---------- */
 
+/**
+ * The mission content is recreated whenever the user navigates.
+ * Therefore, listeners are attached to the newly rendered audio
+ * elements each time setupAudioPlayer() runs.
+ */
 function setupAudioPlayer() {
   const audio = document.getElementById("lelo-audio");
   const playButton = document.getElementById("play-audio-button");
@@ -719,7 +802,9 @@ function setupAudioPlayer() {
 
   function updateProgress() {
     if (Number.isFinite(audio.duration) && audio.duration > 0) {
-      progress.value = String((audio.currentTime / audio.duration) * 100);
+      progress.value = String(
+        (audio.currentTime / audio.duration) * 100
+      );
     } else {
       progress.value = "0";
     }
@@ -734,68 +819,76 @@ function setupAudioPlayer() {
   }
 
   function setPlayingState(playing) {
-    playButton.textContent = playing ? "Ⅱ PAUSE TRACK" : "▶ PLAY TRACK";
+    playButton.textContent = playing
+      ? "Ⅱ PAUSE TRACK"
+      : "▶ PLAY TRACK";
+
     playButton.setAttribute("aria-pressed", String(playing));
   }
 
-  if (!audioEventsAttached) {
-    playButton.addEventListener("click", async () => {
-      if (audio.paused) {
-        try {
-          await audio.play();
-        } catch (error) {
-          if (status) {
-            status.textContent =
-              "Unable to play audio. Check that the MP3 file is in the project folder.";
-          }
+  playButton.addEventListener("click", async () => {
+    if (audio.paused) {
+      try {
+        await audio.play();
+      } catch (error) {
+        console.error("Audio playback failed:", error);
+
+        if (status) {
+          status.textContent =
+            "Unable to play audio. Check that the MP3 file is in the project folder.";
         }
-      } else {
-        audio.pause();
       }
-    });
+    } else {
+      audio.pause();
+    }
+  });
 
-    audio.addEventListener("play", () => {
-      setPlayingState(true);
-      if (status) status.textContent = "PLAYING AUDIO...";
-    });
+  audio.addEventListener("play", () => {
+    setPlayingState(true);
 
-    audio.addEventListener("pause", () => {
-      setPlayingState(false);
+    if (status) {
+      status.textContent = "PLAYING AUDIO...";
+    }
+  });
 
-      if (status && !audio.ended) {
-        status.textContent = "AUDIO PAUSED.";
-      }
-    });
+  audio.addEventListener("pause", () => {
+    setPlayingState(false);
 
-    audio.addEventListener("timeupdate", updateProgress);
-    audio.addEventListener("loadedmetadata", updateProgress);
-    audio.addEventListener("durationchange", updateProgress);
+    if (status && !audio.ended) {
+      status.textContent = "AUDIO PAUSED.";
+    }
+  });
 
-    audio.addEventListener("ended", () => {
-      setPlayingState(false);
-      progress.value = "0";
+  audio.addEventListener("timeupdate", updateProgress);
+  audio.addEventListener("loadedmetadata", updateProgress);
+  audio.addEventListener("durationchange", updateProgress);
 
-      if (status) status.textContent = "TRACK COMPLETE.";
+  audio.addEventListener("ended", () => {
+    setPlayingState(false);
+    progress.value = "0";
 
-      if (currentTimeDisplay) currentTimeDisplay.textContent = "0:00";
-    });
+    if (currentTimeDisplay) {
+      currentTimeDisplay.textContent = "0:00";
+    }
 
-    audio.addEventListener("error", () => {
-      if (status) {
-        status.textContent =
-          "Audio file unavailable. Check the filename and folder location.";
-      }
-    });
+    if (status) {
+      status.textContent = "TRACK COMPLETE.";
+    }
+  });
 
-    progress.addEventListener("input", () => {
-      if (Number.isFinite(audio.duration) && audio.duration > 0) {
-        audio.currentTime =
-          (Number(progress.value) / 100) * audio.duration;
-      }
-    });
+  audio.addEventListener("error", () => {
+    if (status) {
+      status.textContent =
+        "Audio file unavailable. Check the filename and folder location.";
+    }
+  });
 
-    audioEventsAttached = true;
-  }
+  progress.addEventListener("input", () => {
+    if (Number.isFinite(audio.duration) && audio.duration > 0) {
+      audio.currentTime =
+        (Number(progress.value) / 100) * audio.duration;
+    }
+  });
 
   updateProgress();
 }
@@ -1138,13 +1231,20 @@ function renderBirthdayReport() {
 function advanceMission() {
   if (currentMission < TOTAL_MISSIONS - 1) {
     currentMission += 1;
-    maxUnlockedMission = Math.max(maxUnlockedMission, currentMission);
+
+    maxUnlockedMission = Math.max(
+      maxUnlockedMission,
+      currentMission
+    );
+
     renderMission();
 
-    missionContent.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
+    if (missionContent) {
+      missionContent.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }
   } else {
     showFinalCelebration();
   }
@@ -1166,7 +1266,9 @@ function openObjective(index) {
 }
 
 document.addEventListener("click", event => {
-  const answerButton = event.target.closest("[data-maturity-answer]");
+  const answerButton = event.target.closest(
+    "[data-maturity-answer]"
+  );
 
   if (answerButton) {
     handleMaturityAnswer(answerButton.dataset.maturityAnswer);
