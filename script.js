@@ -1131,6 +1131,65 @@ function setupAudioPlayer() {
   });
 }
 
+const initializationForm = document.getElementById("initialization-form");
+const terminalOutput = document.getElementById("terminal-output");
+const startMissionButton = document.getElementById("start-mission");
+
+if (initializationForm && terminalOutput && startMissionButton) {
+  startMissionButton.disabled = true;
+  startMissionButton.style.display = "none";
+
+  initializationForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const nameInput = document.getElementById("subject-name");
+    const ageInput = document.getElementById("subject-age");
+
+    const subjectName = nameInput.value.trim();
+    const age = Number(ageInput.value);
+
+    if (!subjectName || !Number.isInteger(age) || age < 1 || age > 120) {
+      return;
+    }
+
+    const version = (age / 10).toFixed(1);
+
+    initializationForm.hidden = true;
+    terminalOutput.replaceChildren();
+
+    const lines = [
+      { text: ">>> initialize_mission()", className: "prompt-line" },
+      { text: `subject = "${subjectName}"`, className: "code-line" },
+      { text: `age = ${age}`, className: "code-line" },
+      { text: `version = ${version}`, className: "code-line" },
+      { text: 'curiosity = "LIMITLESS"', className: "code-line" },
+      { text: 'potential = "STILL LOADING"', className: "code-line" },
+      { text: "[INITIALIZING BIRTHDAY PROTOCOL...]", className: "code-line" },
+      { text: "[SUCCESS] Birthday protocol initialized.", className: "success-line" }
+    ];
+
+    for (const line of lines) {
+      const paragraph = document.createElement("p");
+      paragraph.className = line.className;
+      paragraph.textContent = "";
+
+      terminalOutput.appendChild(paragraph);
+
+      for (const character of line.text) {
+        paragraph.textContent += character;
+        await new Promise(resolve => setTimeout(resolve, 22));
+      }
+
+      await new Promise(resolve => setTimeout(resolve, 280));
+    }
+
+    startMissionButton.disabled = false;
+    startMissionButton.style.display = "";
+    startMissionButton.innerHTML =
+      'RUN MISSION <span aria-hidden="true">→</span>';
+  });
+}
+
 /* ---------- 20. INITIAL STATE ---------- */
 
 updateSystemStatus("ALL SYSTEMS GO");
