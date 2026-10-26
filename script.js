@@ -36,6 +36,7 @@ let missionCompleted = false;
 let subjectName = "Lelo";
 let subjectAge = 25;
 let projectVersion = "2.5";
+let initializationInProgress = false;
 
 
 /* ---------- 2. HELPER FUNCTIONS ---------- */
@@ -65,6 +66,10 @@ function updateSystemStatus(message) {
   if (systemStatus) {
     systemStatus.textContent = message;
   }
+}
+
+function delay(milliseconds) {
+  return new Promise(resolve => setTimeout(resolve, milliseconds));
 }
 
 
@@ -110,16 +115,19 @@ const missions = [
 ];
 
 
-/* ---------- 4. INITIALIZATION ---------- */
+/* ---------- 4. LINE-BY-LINE INITIALIZATION ---------- */
 
 /**
- * Displays the initialization log one line at a time.
- * The subject's name, age and project version are dynamic.
+ * Prints the initialization log progressively.
+ * Each new line fades in before the next line appears.
  */
 async function loadTerminalLines(name, age, version) {
   const output = document.getElementById("terminal-output");
 
-  if (!output) return;
+  if (!output) {
+    console.error("PROJECT LELO: #terminal-output was not found.");
+    return;
+  }
 
   const lines = [
     "> Initializing PROJECT LELO...",
@@ -133,37 +141,41 @@ async function loadTerminalLines(name, age, version) {
     "> All systems ready."
   ];
 
-  output.innerHTML = `
-    <p class="terminal-label">INITIALIZATION LOG</p>
-  `;
+  // Clear any previous log.
+  output.replaceChildren();
 
+  // Add the heading.
+  const heading = document.createElement("p");
+  heading.className = "terminal-label";
+  heading.textContent = "INITIALIZATION LOG";
+  output.appendChild(heading);
+
+  // Print one line, pause, then print the next.
   for (const message of lines) {
     const line = document.createElement("p");
-
-    // textContent prevents entered names from being interpreted as HTML.
+    line.className = "terminal-line";
     line.textContent = message;
+
+    // Start the line hidden.
     line.style.opacity = "0";
     line.style.transform = "translateY(5px)";
     line.style.transition =
-      "opacity 0.25s ease, transform 0.25s ease";
+      "opacity 0.3s ease, transform 0.3s ease";
 
     output.appendChild(line);
 
-    // Allow the browser to render the new line.
-    await new Promise(resolve => {
-      requestAnimationFrame(resolve);
-    });
+    // Force the browser to register the initial hidden state.
+    void line.offsetHeight;
 
-    // Reveal the line.
+    // Fade the line into view.
     line.style.opacity = "1";
     line.style.transform = "translateY(0)";
 
-    // Wait before showing the next line.
-    await new Promise(resolve => {
-      setTimeout(resolve, 550);
-    });
+    // Wait before appending the next line.
+    await delay(700);
   }
 
+  // Display the success message after all lines have appeared.
   const successLine = document.createElement("p");
   successLine.className = "success-line";
   successLine.textContent =
@@ -172,10 +184,19 @@ async function loadTerminalLines(name, age, version) {
   output.appendChild(successLine);
 }
 
+
+/* ---------- 5. INITIALIZATION FORM ---------- */
+
 function initializeProject() {
-  if (!initializationForm || !terminalOutput || !startButton) {
+  if (
+    !initializationForm ||
+    !terminalOutput ||
+    !startButton ||
+    !subjectNameInput ||
+    !subjectAgeInput
+  ) {
     console.error(
-      "PROJECT LELO initialization elements are missing."
+      "PROJECT LELO: One or more initialization elements are missing. Check the IDs in index.html."
     );
     return;
   }
@@ -186,35 +207,41 @@ function initializeProject() {
   initializationForm.addEventListener("submit", async event => {
     event.preventDefault();
 
+    // Prevent another submission during the animation.
+    if (initializationInProgress) return;
+
     const submitButton = initializationForm.querySelector(
-      'button[type="submit"]'
+      'button[type="submit"], input[type="submit"]'
     );
 
     const enteredName = String(subjectNameInput.value).trim();
     const enteredAge = Number(subjectAgeInput.value);
 
-    // Validate the submitted name and age.
+    // Validate the profile before starting the animation.
     if (
       !enteredName ||
       !Number.isInteger(enteredAge) ||
       enteredAge < 1 ||
       enteredAge > 120
     ) {
-      terminalOutput.innerHTML = `
-        <p class="code-error">
-          &gt; ERROR: Enter a valid name and age.
-        </p>
-      `;
+      terminalOutput.replaceChildren();
 
+      const errorLine = document.createElement("p");
+      errorLine.className = "code-error";
+      errorLine.textContent =
+        "> ERROR: Enter a valid name and age.";
+
+      terminalOutput.appendChild(errorLine);
       return;
     }
 
-    // Save the subject profile.
+    // Save the submitted details.
     subjectName = enteredName.slice(0, 40);
     subjectAge = enteredAge;
     projectVersion = (enteredAge / 10).toFixed(1);
 
-    // Prevent repeated submissions while the animation runs.
+    initializationInProgress = true;
+
     if (submitButton) {
       submitButton.disabled = true;
     }
@@ -230,26 +257,41 @@ function initializeProject() {
 
     updateSystemStatus("INITIALIZING PROJECT...");
 
-    // Run the loading animation before enabling the mission.
-    await loadTerminalLines(
-      subjectName,
-      subjectAge,
-      projectVersion
-    );
+    try {
+      // IMPORTANT: wait for every terminal line to appear.
+      await loadTerminalLines(
+        subjectName,
+        subjectAge,
+        projectVersion
+      );
 
-    startButton.hidden = false;
-    startButton.disabled = false;
+      // Only enable the mission after the log is complete.
+      startButton.hidden = false;
+      startButton.disabled = false;
 
-    if (submitButton) {
-      submitButton.disabled = false;
+      updateSystemStatus("INITIALIZATION COMPLETE");
+    } catch (error) {
+      console.error("Initialization failed:", error);
+      updateSystemStatus("INITIALIZATION ERROR");
+
+      const errorLine = document.createElement("p");
+      errorLine.className = "code-error";
+      errorLine.textContent =
+        "> ERROR: Initialization failed. Please try again.";
+
+      terminalOutput.appendChild(errorLine);
+    } finally {
+      initializationInProgress = false;
+
+      if (submitButton) {
+        submitButton.disabled = false;
+      }
     }
-
-    updateSystemStatus("INITIALIZATION COMPLETE");
   });
 }
 
 
-/* ---------- 5. START THE MISSION ---------- */
+/* ---------- 6. START THE MISSION ---------- */
 
 function startMission() {
   if (!startButton || startButton.disabled || missionStarted) {
@@ -285,7 +327,7 @@ if (startButton) {
 }
 
 
-/* ---------- 6. PROGRESS TRACKER ---------- */
+/* ---------- 7. PROGRESS TRACKER ---------- */
 
 function updateProgress() {
   const percentage = missionCompleted
@@ -335,7 +377,7 @@ function updateObjectives() {
 }
 
 
-/* ---------- 7. RENDER THE CURRENT MISSION ---------- */
+/* ---------- 8. RENDER THE CURRENT MISSION ---------- */
 
 function renderMission() {
   const mission = missions[currentMission];
@@ -401,7 +443,7 @@ function renderMission() {
 }
 
 
-/* ---------- 8. MISSION 01: DATA ACQUISITION ---------- */
+/* ---------- 9. MISSION 01: DATA ACQUISITION ---------- */
 
 function renderDataAcquisition() {
   return `
@@ -486,7 +528,7 @@ function renderDataAcquisition() {
 }
 
 
-/* ---------- 9. MISSION 02: DATA CLEANING & EDA ---------- */
+/* ---------- 10. MISSION 02: DATA CLEANING & EDA ---------- */
 
 function renderDataCleaning() {
   const rawDataset = [
@@ -617,7 +659,7 @@ function renderDataCleaning() {
 }
 
 
-/* ---------- 10. MISSION 03: DATA VISUALISATION ---------- */
+/* ---------- 11. MISSION 03: DATA VISUALISATION ---------- */
 
 function createWaveform() {
   return Array.from({ length: 36 }, (_, index) => {
@@ -783,13 +825,8 @@ function renderDataVisualisation() {
 }
 
 
-/* ---------- 11. AUDIO PLAYER ---------- */
+/* ---------- 12. AUDIO PLAYER ---------- */
 
-/**
- * The mission content is recreated whenever the user navigates.
- * Therefore, listeners are attached to the newly rendered audio
- * elements each time setupAudioPlayer() runs.
- */
 function setupAudioPlayer() {
   const audio = document.getElementById("lelo-audio");
   const playButton = document.getElementById("play-audio-button");
@@ -894,7 +931,7 @@ function setupAudioPlayer() {
 }
 
 
-/* ---------- 12. MISSION 04: MODEL EVALUATION ---------- */
+/* ---------- 13. MISSION 04: MODEL EVALUATION ---------- */
 
 function renderModelEvaluation() {
   return `
@@ -1019,7 +1056,7 @@ function handleMaturityAnswer(answer) {
 }
 
 
-/* ---------- 13. MISSION 05: INTERPRETATION & INSIGHTS ---------- */
+/* ---------- 14. MISSION 05: INTERPRETATION & INSIGHTS ---------- */
 
 function renderInsights() {
   return `
@@ -1133,7 +1170,7 @@ function renderInsights() {
 }
 
 
-/* ---------- 14. MISSION 06: FINAL BIRTHDAY REPORT ---------- */
+/* ---------- 15. MISSION 06: FINAL BIRTHDAY REPORT ---------- */
 
 function renderBirthdayReport() {
   const safeName = escapeHTML(subjectName);
@@ -1226,7 +1263,7 @@ function renderBirthdayReport() {
 }
 
 
-/* ---------- 15. MISSION NAVIGATION ---------- */
+/* ---------- 16. MISSION NAVIGATION ---------- */
 
 function advanceMission() {
   if (currentMission < TOTAL_MISSIONS - 1) {
@@ -1295,7 +1332,7 @@ document.addEventListener("keydown", event => {
 });
 
 
-/* ---------- 16. FINAL CELEBRATION ---------- */
+/* ---------- 17. FINAL CELEBRATION ---------- */
 
 function showFinalCelebration() {
   missionCompleted = true;
@@ -1394,7 +1431,7 @@ function restartMission() {
 }
 
 
-/* ---------- 17. CONFETTI EFFECT ---------- */
+/* ---------- 18. CONFETTI EFFECT ---------- */
 
 function launchConfetti(amount = 60) {
   if (!confettiContainer) return;
@@ -1435,7 +1472,7 @@ function launchConfetti(amount = 60) {
 }
 
 
-/* ---------- 18. STARTUP ---------- */
+/* ---------- 19. STARTUP ---------- */
 
 document.addEventListener("DOMContentLoaded", () => {
   initializeProject();
