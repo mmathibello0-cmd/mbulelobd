@@ -24,139 +24,88 @@
          MISSION 00: BOOT SEQUENCE
     ====================================== -->
 
-    <section id="boot-screen" class="screen">
-      <header class="window-header">
-        <span class="window-dot red"></span>
-        <span class="window-dot yellow"></span>
-        <span class="window-dot green"></span>
-        <span class="window-title">
-          birthday_v2.5.py — PROJECT LELO
-        </span>
-      </header>
+   
+<section id="boot-screen" class="screen">
+  <header class="window-header">
+    <span class="window-dot red"></span>
+    <span class="window-dot yellow"></span>
+    <span class="window-dot green"></span>
+    <span class="window-title">
+      birthday_v2.5.py — PROJECT LELO
+    </span>
+  </header>
 
-      <div class="boot-content">
-       
-<p class="terminal-label">
-  SYSTEM.BOOT // BIRTHDAY PROTOCOL
-</p>
+  <div class="boot-content">
+    <p class="terminal-label">SYSTEM.BOOT // BIRTHDAY PROTOCOL</p>
+    <p class="eyebrow">A SPECIAL OPERATION</p>
 
-<p class="eyebrow">A SPECIAL OPERATION</p>
+    <h1>PROJECT <span>LELO</span></h1>
+    <p class="subtitle">MISSION 25: STILL IN DEVELOPMENT.</p>
 
-<h1>PROJECT <span>LELO</span></h1>
+    <p class="intro-copy">
+      Twenty-five years of evolution.
+      A lifetime of possibilities.
+      One new chapter waiting to be explored.
+    </p>
 
-<p class="subtitle">
-  MISSION 25: STILL IN DEVELOPMENT.
-</p>
+    <div class="terminal-output" id="terminal-output" aria-live="polite">
+      <p class="terminal-label">SYSTEM INITIALIZATION</p>
+      <p>
+        <span class="prompt">&gt;&gt;&gt;</span>
+        Awaiting subject input<span class="typing-cursor">_</span>
+      </p>
+    </div>
 
-<p class="intro-copy">
-  Twenty-five years of evolution.
-  A lifetime of possibilities.
-  One new chapter waiting to be explored.
-</p>
+    <form id="initialization-form" class="initialization-form">
+      <label for="subject-name">Enter your name</label>
+      <input
+        id="subject-name"
+        name="subject-name"
+        type="text"
+        placeholder="Your name..."
+        autocomplete="given-name"
+        maxlength="40"
+        required
+      >
 
-<div class="terminal-output" id="terminal-output" aria-live="polite">
-  <p class="terminal-label">SYSTEM INITIALIZATION</p>
-  <p>
-    <span class="prompt">&gt;&gt;&gt;</span>
-    Awaiting subject input<span class="typing-cursor">_</span>
-  </p>
-</div>
+      <label for="subject-age">Enter your current age</label>
+      <input
+        id="subject-age"
+        name="subject-age"
+        type="number"
+        placeholder="Your age..."
+        min="1"
+        max="120"
+        required
+      >
 
-<form id="initialization-form" class="initialization-form">
-  <label for="subject-name">Enter your name</label>
-  <input
-    id="subject-name"
-    name="subject-name"
-    type="text"
-    placeholder="Your name..."
-    autocomplete="given-name"
-    maxlength="40"
-    required
-  >
+      <button type="submit" class="primary-button">
+        INITIALIZE MISSION →
+      </button>
+    </form>
 
-  <label for="subject-age">Enter your current age</label>
-  <input
-    id="subject-age"
-    name="subject-age"
-    type="number"
-    placeholder="Your age..."
-    min="1"
-    max="120"
-    required
-  >
+    <div class="boot-meta">
+      <span>STATUS: READY</span>
+      <span>ACCESS: AUTHORISED</span>
+      <span>SUBJECT: LELO</span>
+    </div>
 
-  <button type="submit" class="primary-button">
-    INITIALIZE MISSION →
-  </button>
-</form>
+    <button
+      id="start-mission"
+      class="primary-button"
+      type="button"
+      hidden
+      disabled
+    >
+      RUN MISSION <span aria-hidden="true">→</span>
+    </button>
 
-<div class="boot-meta">
-  <span>STATUS: READY</span>
-  <span>ACCESS: AUTHORISED</span>
-  <span>SUBJECT: LELO</span>
-</div>
+    <p class="small-note">
+      A birthday experience compiled with care.
+    </p>
+  </div>
+</section>
 
-<button
-  id="start-mission"
-  class="primary-button"
-  type="button"
-  hidden
-  disabled
->
-  RUN MISSION <span aria-hidden="true">→</span>
-</button>
-
-<p class="small-note">
-  A birthday experience compiled with care.
-</p>
-
-</div>
-
-<form id="initialization-form" class="initialization-form">
-  <label for="subject-name">Enter your name</label>
-  <input
-    id="subject-name"
-    name="subject-name"
-    type="text"
-    placeholder="Your name..."
-    value=""
-    autocomplete="given-name"
-    maxlength="40"
-    required
-  >
-
-  <label for="subject-age">Enter your current age</label>
-  <input
-    id="subject-age"
-    name="subject-age"
-    type="number"
-    placeholder="Your age..."
-    min="1"
-    max="120"
-    required
-  >
-
-  <button type="submit" class="primary-button">
-    INITIALIZE MISSION →
-  </button>
-</form>
-
-
-        <div class="boot-meta">
-          <span>STATUS: READY</span>
-          <span>ACCESS: AUTHORISED</span>
-          <span>SUBJECT: LELO</span>
-        </div>
-
-        <button id="start-mission" class="primary-button">
-          RUN MISSION <span aria-hidden="true">→</span>
-        </button>
-
-        <p class="small-note">
-          A birthday experience compiled with care.
-        </p>
-      </div>
-    </section>
 
 
     <!-- =====================================
