@@ -1112,3 +1112,32 @@ a:focus-visible {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ---------- INTERACTIVE OBJECTIVES ---------- */
+
+.objective-item[role="button"] {
+  cursor: pointer;
+}
+
+.objective-item.locked {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.objective-item.locked:hover {
+  background: #131c24;
+  border-color: var(--border);
+}
+
+.objective-item[role="button"]:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+
+.objective-item.completed .objective-number::before {
+  content: "✓ ";
+}
+
+.objective-item.completed .objective-number {
+  color: var(--green);
+}
