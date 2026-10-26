@@ -54,13 +54,44 @@
         </p>
 
         <div class="terminal-output">
-          <p><span class="prompt">&gt;&gt;&gt;</span> initialize_mission()</p>
-          <p><span class="code-purple">subject</span> = "Mbulelo"</p>
-          <p><span class="code-purple">version</span> = 2.5</p>
-          <p><span class="code-purple">curiosity</span> = "LIMITLESS"</p>
-          <p><span class="code-purple">potential</span> = "STILL LOADING"</p>
-          <p class="success-line">[SUCCESS] Birthday protocol located.</p>
-        </div>
+       
+<div class="terminal-output" id="terminal-output">
+  <p class="terminal-label">SYSTEM INITIALIZATION</p>
+  <p>
+    <span class="prompt">&gt;&gt;&gt;</span>
+    Awaiting subject input<span class="typing-cursor">_</span>
+  </p>
+</div>
+
+<form id="initialization-form" class="initialization-form">
+  <label for="subject-name">Enter your name</label>
+  <input
+    id="subject-name"
+    name="subject-name"
+    type="text"
+    placeholder="Your name..."
+    value=""
+    autocomplete="given-name"
+    maxlength="40"
+    required
+  >
+
+  <label for="subject-age">Enter your current age</label>
+  <input
+    id="subject-age"
+    name="subject-age"
+    type="number"
+    placeholder="Your age..."
+    min="1"
+    max="120"
+    required
+  >
+
+  <button type="submit" class="primary-button">
+    INITIALIZE MISSION →
+  </button>
+</form>
+
 
         <div class="boot-meta">
           <span>STATUS: READY</span>
