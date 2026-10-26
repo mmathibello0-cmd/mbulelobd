@@ -2,7 +2,7 @@
 /* ==========================================
    PROJECT LELO | MISSION 25
    Theme: Dark Developer Dashboard
-   Build: v2.5
+   Build: v2.6
 ========================================== */
 
 /* ---------- 1. DESIGN SYSTEM ---------- */
@@ -41,15 +41,12 @@
   --radius-md: 10px;
   --radius-lg: 16px;
 
-  --shadow:
-    0 24px 80px rgba(0, 0, 0, 0.38);
-
-  --glow-green:
-    0 0 24px rgba(126, 231, 135, 0.09);
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.38);
+  --glow-green: 0 0 24px rgba(126, 231, 135, 0.09);
 }
 
 
-/* ---------- 2. RESET ---------- */
+/* ---------- 2. RESET & BASE ---------- */
 
 * {
   box-sizing: border-box;
@@ -88,7 +85,8 @@ body {
 
 button,
 input,
-textarea {
+textarea,
+select {
   font: inherit;
 }
 
@@ -97,6 +95,9 @@ button {
 }
 
 button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
 a:focus-visible {
   outline: 2px solid var(--blue);
   outline-offset: 4px;
@@ -109,6 +110,20 @@ a:focus-visible {
 
 [hidden] {
   display: none !important;
+}
+
+img,
+svg,
+video {
+  max-width: 100%;
+}
+
+p,
+h1,
+h2,
+h3,
+h4 {
+  overflow-wrap: anywhere;
 }
 
 
@@ -281,49 +296,6 @@ a:focus-visible {
   line-height: 1.85;
 }
 
-.terminal-output {
-  width: 100%;
-  margin: 30px 0 22px;
-  padding: 24px;
-
-  background:
-    linear-gradient(
-      120deg,
-      rgba(126, 231, 135, 0.025),
-      transparent 55%
-    ),
-    var(--terminal);
-
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-
-  color: #c6d3dc;
-  font-family: var(--font-code);
-  font-size: 13px;
-  overflow-wrap: anywhere;
-  box-shadow: inset 0 1px rgba(255, 255, 255, 0.015);
-}
-
-.terminal-output p + p {
-  margin-top: 9px;
-}
-
-.prompt {
-  color: var(--green);
-}
-
-.code-purple {
-  color: var(--purple);
-}
-
-.success-line {
-  margin-top: 17px !important;
-  padding-top: 12px;
-
-  color: var(--green);
-  border-top: 1px solid rgba(126, 231, 135, 0.12);
-}
-
 .boot-meta {
   width: 100%;
 
@@ -345,11 +317,139 @@ a:focus-visible {
   font-size: 12px;
 }
 
+.typing-cursor {
+  color: var(--green);
+  animation: terminal-blink 1s steps(2, start) infinite;
+}
 
-/* ---------- 6. BUTTONS ---------- */
+@keyframes terminal-blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+
+/* ---------- 6. INITIALIZATION FORM ---------- */
+
+.initialization-form {
+  width: 100%;
+  display: grid;
+  gap: 10px;
+  margin: 24px 0;
+}
+
+.initialization-form label {
+  color: var(--green);
+  font-family: var(--font-code);
+  font-size: 13px;
+}
+
+.initialization-form input {
+  width: 100%;
+  min-width: 0;
+  padding: 12px 14px;
+
+  color: var(--text);
+  background: #0d1117;
+
+  border: 1px solid var(--border-bright);
+  border-radius: 8px;
+
+  font-family: var(--font-main);
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.initialization-form input:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 2px rgba(126, 231, 135, 0.12);
+}
+
+.initialization-form input::placeholder {
+  color: var(--subtle);
+}
+
+.initialization-form .primary-button {
+  margin-top: 12px;
+}
+
+.initialization-form[hidden] {
+  display: none !important;
+}
+
+
+/* ---------- 7. TERMINAL OUTPUT ---------- */
+
+.terminal-output {
+  width: 100%;
+  margin: 30px 0 22px;
+  padding: 24px;
+
+  background:
+    linear-gradient(
+      120deg,
+      rgba(126, 231, 135, 0.025),
+      transparent 55%
+    ),
+    var(--terminal);
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+
+  color: #c6d3dc;
+  font-family: var(--font-code);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+
+  box-shadow: inset 0 1px rgba(255, 255, 255, 0.015);
+}
+
+.terminal-output p + p {
+  margin-top: 9px;
+}
+
+.prompt {
+  color: var(--green);
+}
+
+.code-purple {
+  color: var(--purple);
+}
+
+.code-green {
+  color: var(--green);
+}
+
+.code-blue {
+  color: var(--blue);
+}
+
+.code-comment {
+  color: var(--subtle);
+  font-style: italic;
+}
+
+.code-error {
+  color: var(--red);
+}
+
+.success-line {
+  margin-top: 17px !important;
+  padding-top: 12px;
+
+  color: var(--green);
+  border-top: 1px solid rgba(126, 231, 135, 0.12);
+}
+
+
+/* ---------- 8. BUTTONS ---------- */
 
 .primary-button {
   min-height: 46px;
+  max-width: 100%;
 
   display: inline-flex;
   align-items: center;
@@ -379,15 +479,13 @@ a:focus-visible {
     background 0.2s ease;
 }
 
-.primary-button:hover {
+.primary-button:hover:not(:disabled) {
   transform: translateY(-2px);
   background: var(--green-bright);
-
-  box-shadow:
-    0 8px 26px rgba(126, 231, 135, 0.15);
+  box-shadow: 0 8px 26px rgba(126, 231, 135, 0.15);
 }
 
-.primary-button:active {
+.primary-button:active:not(:disabled) {
   transform: translateY(0);
   box-shadow: none;
 }
@@ -400,7 +498,7 @@ a:focus-visible {
 }
 
 
-/* ---------- 7. DASHBOARD HEADER ---------- */
+/* ---------- 9. DASHBOARD HEADER ---------- */
 
 .dashboard-header {
   display: flex;
@@ -476,17 +574,17 @@ a:focus-visible {
 .status-indicator {
   width: 7px;
   height: 7px;
+  flex: 0 0 7px;
 
   background: var(--green);
   border-radius: 50%;
-
   box-shadow: 0 0 9px rgba(126, 231, 135, 0.45);
 
   animation: status-pulse 2s ease-in-out infinite;
 }
 
 
-/* ---------- 8. PROGRESS NAVIGATION ---------- */
+/* ---------- 10. PROGRESS NAVIGATION ---------- */
 
 .mission-nav {
   padding: 23px clamp(22px, 5vw, 48px);
@@ -539,18 +637,16 @@ a:focus-visible {
   );
 
   border-radius: inherit;
-
   box-shadow: 0 0 12px rgba(126, 231, 135, 0.2);
 
   transition: width 0.5s ease;
 }
 
 
-/* ---------- 9. OBJECTIVE GRID ---------- */
+/* ---------- 11. OBJECTIVE GRID ---------- */
 
 .objective-list {
   padding: 24px clamp(22px, 5vw, 48px);
-
   border-bottom: 1px solid var(--border);
 }
 
@@ -578,6 +674,7 @@ a:focus-visible {
 
   padding: 13px 12px;
 
+  color: inherit;
   background: #131c24;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
@@ -586,6 +683,10 @@ a:focus-visible {
     border-color 0.2s ease,
     background 0.2s ease,
     transform 0.2s ease;
+}
+
+.objective-item[role="button"] {
+  cursor: pointer;
 }
 
 .objective-number {
@@ -629,13 +730,30 @@ a:focus-visible {
   content: "✓ ";
 }
 
-.objective-item:not(.active):hover {
+.objective-item:not(.active):not(.locked):hover {
   background: var(--panel-hover);
   border-color: var(--border-bright);
 }
 
+.objective-item.locked,
+.objective-item[aria-disabled="true"] {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
 
-/* ---------- 10. MISSION CONTENT ---------- */
+.objective-item.locked:hover,
+.objective-item[aria-disabled="true"]:hover {
+  background: #131c24;
+  border-color: var(--border);
+}
+
+.objective-item[role="button"]:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 3px;
+}
+
+
+/* ---------- 12. MISSION CONTENT ---------- */
 
 .mission-content {
   min-height: 400px;
@@ -653,6 +771,10 @@ a:focus-visible {
   font-weight: 750;
   line-height: 1.2;
   letter-spacing: -1.1px;
+}
+
+.mission-content h3 {
+  line-height: 1.4;
 }
 
 .mission-content > p:not(.terminal-label) {
@@ -676,16 +798,169 @@ a:focus-visible {
   line-height: 1.85;
 }
 
+.mission-content ul,
+.mission-content ol {
+  padding-left: 24px;
+}
 
-/* ---------- 11. OPTIONAL DETAIL COMPONENTS ---------- */
+.mission-content li {
+  margin-bottom: 7px;
+  color: #c1cdd6;
+}
 
-/* Use these classes for future mission cards. */
+
+/* ---------- 13. TERMINAL WINDOWS ---------- */
+
+.terminal-window {
+  margin: 24px 0;
+  overflow: hidden;
+
+  background: var(--terminal);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--glow-green);
+}
+
+.terminal-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  padding: 12px 15px;
+
+  background: #1a222b;
+  border-bottom: 1px solid var(--border);
+}
+
+.terminal-dot {
+  width: 9px;
+  height: 9px;
+  flex: 0 0 9px;
+  border-radius: 50%;
+}
+
+.terminal-dot.red {
+  background: var(--red);
+}
+
+.terminal-dot.yellow {
+  background: var(--yellow);
+}
+
+.terminal-dot.green {
+  background: var(--green);
+}
+
+.terminal-title {
+  min-width: 0;
+  margin-left: 7px;
+
+  color: var(--muted);
+  font-family: var(--font-code);
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
+.terminal-body {
+  padding: 22px;
+
+  color: #c9d5df;
+  font-family: var(--font-code);
+  font-size: 12px;
+  line-height: 1.9;
+
+  overflow-wrap: anywhere;
+}
+
+.terminal-body p {
+  margin-bottom: 5px;
+}
+
+.terminal-body .code-comment {
+  margin-bottom: 14px;
+}
+
+.terminal-body .code-indent {
+  padding-left: 24px;
+}
+
+.terminal-body .terminal-output {
+  margin: 20px 0 0;
+  padding: 17px;
+}
+
+.terminal-divider {
+  margin: 18px 0;
+  border: 0;
+  border-top: 1px solid var(--border);
+}
+
+
+/* ---------- 14. MISSION PANELS & CARDS ---------- */
+
+.mission-panel {
+  display: grid;
+  gap: 22px;
+}
+
+.mission-panel h2 {
+  font-size: clamp(23px, 4vw, 34px);
+  line-height: 1.3;
+}
+
+.mission-card,
+.birthday-message-card {
+  min-width: 0;
+  padding: clamp(18px, 4vw, 28px);
+
+  background: var(--panel-light);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.mission-card p,
+.birthday-message-card p {
+  margin-top: 12px;
+
+  color: #c1cdd6;
+  font-size: 14px;
+  line-height: 1.9;
+}
+
+.section-label {
+  color: var(--green) !important;
+  font-family: var(--font-code);
+  font-size: 10px !important;
+  font-weight: 700;
+  letter-spacing: 1.3px;
+  text-transform: uppercase;
+}
+
+.highlight-panel {
+  margin: 22px 0;
+  padding: 22px;
+
+  background: rgba(126, 231, 135, 0.045);
+  border: 1px solid rgba(126, 231, 135, 0.17);
+  border-radius: var(--radius-md);
+}
+
+.highlight-panel p {
+  color: #d3e1d6;
+  line-height: 1.9;
+}
+
+.highlight-panel strong {
+  color: var(--green);
+}
+
+
+/* ---------- 15. DETAIL CARDS ---------- */
 
 .detail-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
-
   margin: 24px 0;
 }
 
@@ -726,6 +1001,9 @@ a:focus-visible {
   font-size: 12px;
 }
 
+
+/* ---------- 16. INFORMATION PANELS ---------- */
+
 .info-panel {
   margin: 22px 0;
   padding: 18px 20px;
@@ -746,23 +1024,8 @@ a:focus-visible {
   color: var(--blue);
 }
 
-.highlight-panel {
-  margin: 22px 0;
-  padding: 22px;
 
-  background: rgba(126, 231, 135, 0.045);
-  border: 1px solid rgba(126, 231, 135, 0.17);
-  border-radius: var(--radius-md);
-}
-
-.highlight-panel p {
-  color: #d3e1d6;
-  line-height: 1.9;
-}
-
-.highlight-panel strong {
-  color: var(--green);
-}
+/* ---------- 17. TIMELINE ---------- */
 
 .timeline {
   position: relative;
@@ -824,7 +1087,308 @@ a:focus-visible {
 }
 
 
-/* ---------- 12. STATUS BAR ---------- */
+/* ---------- 18. DATA SUMMARY & INSIGHTS ---------- */
+
+.data-summary-grid,
+.insight-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 18px 0;
+}
+
+.data-card,
+.insight-card {
+  min-width: 0;
+  padding: 20px;
+
+  background: var(--panel-light);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.data-card h3,
+.insight-card h3 {
+  margin: 8px 0;
+  font-size: 16px;
+}
+
+.data-card p,
+.insight-card p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.data-value {
+  display: block;
+
+  color: var(--green);
+  font-family: var(--font-code);
+  font-size: 25px;
+  font-weight: 700;
+}
+
+.insight-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 35px;
+  height: 35px;
+
+  color: var(--green);
+  background: rgba(126, 231, 135, 0.08);
+  border: 1px solid rgba(126, 231, 135, 0.2);
+  border-radius: var(--radius-sm);
+
+  font-family: var(--font-code);
+  font-size: 11px;
+}
+
+.insight-status {
+  display: inline-block;
+  margin-top: 16px;
+
+  color: var(--green);
+  font-family: var(--font-code);
+  font-size: 9px;
+  letter-spacing: 0.8px;
+}
+
+
+/* ---------- 19. DATA TABLES ---------- */
+
+.data-table-wrapper,
+.table-wrapper {
+  width: 100%;
+  max-width: 100%;
+  margin: 20px 0;
+  overflow-x: auto;
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.data-table,
+.data-table-wrapper table,
+.table-wrapper table {
+  width: 100%;
+  border-collapse: collapse;
+
+  font-family: var(--font-code);
+  font-size: 12px;
+  text-align: left;
+}
+
+.data-table th,
+.data-table td,
+.data-table-wrapper th,
+.data-table-wrapper td,
+.table-wrapper th,
+.table-wrapper td {
+  padding: 12px 15px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.data-table th,
+.data-table-wrapper th,
+.table-wrapper th {
+  color: var(--green);
+  background: #131c24;
+}
+
+.data-table td,
+.data-table-wrapper td,
+.table-wrapper td {
+  color: #c9d5df;
+}
+
+.data-table tr:last-child td,
+.data-table-wrapper tr:last-child td,
+.table-wrapper tr:last-child td {
+  border-bottom: 0;
+}
+
+
+/* ---------- 20. AUDIO PLAYER & VISUALISATION ---------- */
+
+.audio-player {
+  padding: 22px;
+  background: var(--terminal);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.audio-player button {
+  margin-top: 15px;
+}
+
+.audio-player audio {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+}
+
+.audio-waveform {
+  min-height: 95px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+
+  overflow: hidden;
+}
+
+.waveform-bar {
+  flex: 1 1 4px;
+  min-width: 2px;
+  max-width: 8px;
+  height: var(--bar-height, 30px);
+
+  background: var(--green);
+  border-radius: 4px;
+  opacity: 0.8;
+  transform-origin: center;
+}
+
+.audio-player.is-playing .waveform-bar {
+  animation: waveform-pulse 0.7s ease-in-out infinite alternate;
+  animation-delay: var(--bar-delay, 0s);
+}
+
+.audio-controls {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+
+  margin-top: 12px;
+
+  color: var(--muted);
+  font-family: var(--font-code);
+  font-size: 11px;
+}
+
+#audio-progress {
+  width: 100%;
+  accent-color: var(--green);
+  cursor: pointer;
+}
+
+.audio-status {
+  margin-top: 10px;
+  color: var(--subtle);
+  font-size: 11px;
+}
+
+
+/* ---------- 21. MODEL EVALUATION QUIZ ---------- */
+
+.answer-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 22px 0;
+}
+
+.answer-button {
+  min-width: 110px;
+  padding: 12px 22px;
+
+  color: var(--green);
+  background: var(--terminal);
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius-sm);
+
+  font-family: var(--font-code);
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.answer-button:hover {
+  background: var(--green-dark);
+  border-color: var(--green);
+  transform: translateY(-1px);
+}
+
+.answer-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+#maturity-result {
+  min-height: 65px;
+}
+
+
+/* ---------- 22. BIRTHDAY REPORT ---------- */
+
+.birthday-message-card {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(126, 231, 135, 0.07),
+      transparent 75%
+    ),
+    var(--panel-light);
+
+  border-color: rgba(126, 231, 135, 0.25);
+}
+
+.birthday-message-card h2 {
+  color: var(--green);
+}
+
+.birthday-message-card p {
+  margin-top: 14px;
+}
+
+.birthday-report .report-footer {
+  margin-top: 0;
+}
+
+.report-footer {
+  padding-top: 18px;
+  color: var(--subtle);
+  font-family: var(--font-code);
+  font-size: 10px;
+  border-top: 1px solid var(--border);
+}
+
+
+/* ---------- 23. FINAL CELEBRATION ---------- */
+
+.final-screen {
+  text-align: left;
+}
+
+.final-screen > h2 {
+  margin-top: 25px;
+  color: var(--green);
+}
+
+.final-screen > p {
+  margin: 14px 0;
+  color: var(--muted);
+  line-height: 1.9;
+}
+
+.final-screen .primary-button {
+  margin-top: 15px;
+}
+
+
+/* ---------- 24. STATUS BAR ---------- */
 
 .status-bar {
   display: flex;
@@ -845,7 +1409,7 @@ a:focus-visible {
 }
 
 
-/* ---------- 13. CONFETTI ---------- */
+/* ---------- 25. CONFETTI ---------- */
 
 #confetti-container {
   position: fixed;
@@ -869,7 +1433,7 @@ a:focus-visible {
 }
 
 
-/* ---------- 14. ANIMATIONS ---------- */
+/* ---------- 26. ANIMATIONS ---------- */
 
 @keyframes screen-enter {
   from {
@@ -908,8 +1472,20 @@ a:focus-visible {
   }
 }
 
+@keyframes waveform-pulse {
+  from {
+    transform: scaleY(0.45);
+    opacity: 0.5;
+  }
 
-/* ---------- 15. TABLET RESPONSIVENESS ---------- */
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+
+/* ---------- 27. TABLET RESPONSIVENESS ---------- */
 
 @media (max-width: 760px) {
   .app {
@@ -939,7 +1515,7 @@ a:focus-visible {
 }
 
 
-/* ---------- 16. MOBILE RESPONSIVENESS ---------- */
+/* ---------- 28. MOBILE RESPONSIVENESS ---------- */
 
 @media (max-width: 520px) {
   .app {
@@ -994,7 +1570,6 @@ a:focus-visible {
 
   .primary-button {
     min-height: 44px;
-    max-width: 100%;
     padding: 12px 14px;
     font-size: 11px;
   }
@@ -1078,17 +1653,45 @@ a:focus-visible {
     font-size: 13px;
   }
 
-  .detail-grid {
+  .detail-grid,
+  .data-summary-grid,
+  .insight-grid {
     grid-template-columns: 1fr;
   }
 
-  .detail-card {
+  .detail-card,
+  .data-card,
+  .insight-card {
     padding: 16px;
   }
 
   .info-panel,
   .highlight-panel {
     padding: 16px;
+  }
+
+  .terminal-body {
+    padding: 15px;
+    font-size: 10px;
+  }
+
+  .mission-card,
+  .birthday-message-card {
+    padding: 17px;
+  }
+
+  .audio-player {
+    padding: 15px;
+  }
+
+  .audio-controls {
+    gap: 7px;
+    font-size: 9px;
+  }
+
+  .answer-button {
+    flex: 1 1 100px;
+    padding: 12px 14px;
   }
 
   .status-bar {
@@ -1100,7 +1703,7 @@ a:focus-visible {
 }
 
 
-/* ---------- 17. ACCESSIBILITY ---------- */
+/* ---------- 29. ACCESSIBILITY ---------- */
 
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -1111,529 +1714,8 @@ a:focus-visible {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-}
 
-/* ---------- INTERACTIVE OBJECTIVES ---------- */
-
-.objective-item[role="button"] {
-  cursor: pointer;
-}
-
-.objective-item.locked {
-  cursor: not-allowed;
-  opacity: 0.48;
-}
-
-.objective-item.locked:hover {
-  background: #131c24;
-  border-color: var(--border);
-}
-
-.objective-item[role="button"]:focus-visible {
-  outline: 2px solid var(--blue);
-  outline-offset: 3px;
-}
-
-.objective-item.completed .objective-number::before {
-  content: "✓ ";
-}
-
-.objective-item.completed .objective-number {
-  color: var(--green);
-}
-
-.initialization-form {
-  display: grid;
-  gap: 10px;
-  margin: 24px 0;
-}
-
-.initialization-form label {
-  color: var(--green);
-  font-family: monospace;
-  font-size: 13px;
-}
-
-.initialization-form input {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 12px 14px;
-  border: 1px solid var(--border-bright);
-  border-radius: 8px;
-  background: #0d1117;
-  color: #e6edf3;
-  font: inherit;
-  outline: none;
-}
-
-.initialization-form input:focus {
-  border-color: var(--green);
-  box-shadow: 0 0 0 2px rgba(98, 217, 149, 0.12);
-}
-
-.initialization-form .primary-button {
-  margin-top: 12px;
-}
-
-.typing-cursor {
-  color: var(--green);
-  animation: terminalBlink 1s steps(2, start) infinite;
-}
-
-@keyframes terminalBlink {
-  to {
-    visibility: hidden;
+  .audio-player.is-playing .waveform-bar {
+    animation: none;
   }
-}
-
-.initialization-form[hidden] {
-  display: none;
-}
-
-/* ==========================================
-   PROJECT LELO | DATA SCIENCE COMPONENTS
-   Add this block to the bottom of style.css
-========================================== */
-
-/* ---------- TERMINAL WINDOWS ---------- */
-
-.terminal-window {
-    margin: 24px 0;
-    overflow: hidden;
-    background: var(--terminal);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    box-shadow: var(--glow-green);
-}
-
-.terminal-header {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    padding: 12px 15px;
-    background: #1a222b;
-    border-bottom: 1px solid var(--border);
-}
-
-.terminal-dot {
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-}
-
-.terminal-dot.red {
-    background: var(--red);
-}
-
-.terminal-dot.yellow {
-    background: var(--yellow);
-}
-
-.terminal-dot.green {
-    background: var(--green);
-}
-
-.terminal-title {
-    margin-left: 7px;
-    color: var(--muted);
-    font-family: var(--font-code);
-    font-size: 11px;
-    overflow-wrap: anywhere;
-}
-
-.terminal-body {
-    padding: 22px;
-    color: #c9d5df;
-    font-family: var(--font-code);
-    font-size: 12px;
-    line-height: 1.9;
-    overflow-wrap: anywhere;
-}
-
-.terminal-body p {
-    margin-bottom: 5px;
-}
-
-.terminal-body .code-comment {
-    margin-bottom: 14px;
-    color: var(--subtle);
-}
-
-.terminal-body .code-indent {
-    padding-left: 24px;
-}
-
-.terminal-body .terminal-output {
-    margin: 20px 0 0;
-    padding: 17px;
-}
-
-.terminal-divider {
-    margin: 18px 0;
-    border: 0;
-    border-top: 1px solid var(--border);
-}
-
-
-/* ---------- SYNTAX HIGHLIGHTING ---------- */
-
-.code-purple {
-    color: var(--purple);
-}
-
-.code-green {
-    color: var(--green);
-}
-
-.code-blue {
-    color: var(--blue);
-}
-
-.code-comment {
-    color: var(--subtle);
-    font-style: italic;
-}
-
-.code-error {
-    color: var(--red);
-}
-
-
-/* ---------- MISSION PANELS ---------- */
-
-.mission-panel {
-    display: grid;
-    gap: 22px;
-}
-
-.mission-panel h2 {
-    font-size: clamp(23px, 4vw, 34px);
-    line-height: 1.3;
-}
-
-.mission-card,
-.birthday-message-card {
-    min-width: 0;
-    padding: clamp(18px, 4vw, 28px);
-    background: var(--panel-light);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-}
-
-.mission-card p,
-.birthday-message-card p {
-    margin-top: 12px;
-    color: #c1cdd6;
-    font-size: 14px;
-    line-height: 1.9;
-}
-
-.section-label {
-    color: var(--green) !important;
-    font-family: var(--font-code);
-    font-size: 10px !important;
-    font-weight: 700;
-    letter-spacing: 1.3px;
-    text-transform: uppercase;
-}
-
-
-/* ---------- DATA CLEANING & EDA ---------- */
-
-.data-summary-grid,
-.insight-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
-    margin: 18px 0;
-}
-
-.data-card,
-.insight-card {
-    min-width: 0;
-    padding: 20px;
-    background: var(--panel-light);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-}
-
-.data-card h3,
-.insight-card h3 {
-    margin: 8px 0;
-    font-size: 16px;
-}
-
-.data-card p,
-.insight-card p {
-    color: var(--muted);
-    font-size: 12px;
-    line-height: 1.8;
-}
-
-.data-value {
-    display: block;
-    color: var(--green);
-    font-family: var(--font-code);
-    font-size: 25px;
-    font-weight: 700;
-}
-
-.data-table-wrapper {
-    width: 100%;
-    margin: 20px 0;
-    overflow-x: auto;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-}
-
-.data-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: var(--font-code);
-    font-size: 12px;
-    text-align: left;
-}
-
-.data-table th,
-.data-table td {
-    padding: 12px 15px;
-    border-bottom: 1px solid var(--border);
-    white-space: nowrap;
-}
-
-.data-table th {
-    color: var(--green);
-    background: #131c24;
-}
-
-.data-table td {
-    color: #c9d5df;
-}
-
-.data-table tr:last-child td {
-    border-bottom: 0;
-}
-
-
-/* ---------- AUDIO VISUALISATION ---------- */
-
-.audio-player {
-    padding: 22px;
-    background: var(--terminal);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-}
-
-.audio-player button {
-    margin-top: 15px;
-}
-
-.audio-waveform {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-    min-height: 95px;
-    overflow: hidden;
-}
-
-.waveform-bar {
-    flex: 1 1 4px;
-    max-width: 8px;
-    min-width: 2px;
-    height: var(--bar-height, 30px);
-    background: var(--green);
-    border-radius: 4px;
-    opacity: 0.8;
-    transform-origin: center;
-}
-
-.audio-player.is-playing .waveform-bar {
-    animation: waveform-pulse 0.7s ease-in-out infinite alternate;
-    animation-delay: var(--bar-delay, 0s);
-}
-
-.audio-controls {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 12px;
-    margin-top: 12px;
-    color: var(--muted);
-    font-family: var(--font-code);
-    font-size: 11px;
-}
-
-#audio-progress {
-    width: 100%;
-    accent-color: var(--green);
-    cursor: pointer;
-}
-
-.audio-status,
-.small-note {
-    color: var(--subtle);
-    font-size: 11px;
-}
-
-
-/* ---------- MODEL EVALUATION QUIZ ---------- */
-
-.answer-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin: 22px 0;
-}
-
-.answer-button {
-    min-width: 110px;
-    padding: 12px 22px;
-    color: var(--green);
-    background: var(--terminal);
-    border: 1px solid var(--border-bright);
-    border-radius: var(--radius-sm);
-    font-family: var(--font-code);
-    font-weight: 700;
-    cursor: pointer;
-    transition: background 0.2s ease, border-color 0.2s ease;
-}
-
-.answer-button:hover,
-.answer-button:focus-visible {
-    background: var(--green-dark);
-    border-color: var(--green);
-}
-
-#maturity-result {
-    min-height: 65px;
-}
-
-
-/* ---------- INTERPRETATION CARDS ---------- */
-
-.insight-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 35px;
-    height: 35px;
-    color: var(--green);
-    background: rgba(126, 231, 135, 0.08);
-    border: 1px solid rgba(126, 231, 135, 0.2);
-    border-radius: var(--radius-sm);
-    font-family: var(--font-code);
-    font-size: 11px;
-}
-
-.insight-status {
-    display: inline-block;
-    margin-top: 16px;
-    color: var(--green);
-    font-family: var(--font-code);
-    font-size: 9px;
-    letter-spacing: 0.8px;
-}
-
-
-/* ---------- FINAL BIRTHDAY REPORT ---------- */
-
-.birthday-message-card {
-    background:
-        linear-gradient(
-            145deg,
-            rgba(126, 231, 135, 0.07),
-            transparent 75%
-        ),
-        var(--panel-light);
-    border-color: rgba(126, 231, 135, 0.25);
-}
-
-.birthday-message-card h2 {
-    color: var(--green);
-}
-
-.birthday-report .report-footer {
-    margin-top: 0;
-}
-
-.final-screen {
-    text-align: left;
-}
-
-.final-screen > h2 {
-    margin-top: 25px;
-    color: var(--green);
-}
-
-.final-screen > p {
-    margin: 14px 0;
-    color: var(--muted);
-    line-height: 1.9;
-}
-
-.final-screen .primary-button {
-    margin-top: 15px;
-}
-
-
-/* ---------- OBJECTIVE NAVIGATION ---------- */
-
-.objective-item[aria-disabled="true"] {
-    opacity: 0.48;
-    cursor: not-allowed;
-}
-
-.objective-item[aria-disabled="false"] {
-    cursor: pointer;
-}
-
-
-/* ---------- CONFETTI ANIMATION ---------- */
-
-@keyframes waveform-pulse {
-    from {
-        transform: scaleY(0.45);
-        opacity: 0.5;
-    }
-
-    to {
-        transform: scaleY(1);
-        opacity: 1;
-    }
-}
-
-
-/* ---------- RESPONSIVE ADJUSTMENTS ---------- */
-
-@media (max-width: 520px) {
-    .terminal-body {
-        padding: 15px;
-        font-size: 10px;
-    }
-
-    .data-summary-grid,
-    .insight-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .audio-controls {
-        gap: 7px;
-        font-size: 9px;
-    }
-
-    .mission-card,
-    .birthday-message-card {
-        padding: 17px;
-    }
-
-    .answer-button {
-        flex: 1 1 100px;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .audio-player.is-playing .waveform-bar {
-        animation: none;
-    }
 }
