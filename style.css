@@ -1,0 +1,375 @@
+
+/* ========================================
+   PROJECT LELO | MISSION 25
+   Dark developer theme
+======================================== */
+
+:root {
+  --bg: #0d1117;
+  --panel: #161b22;
+  --panel-light: #1f2937;
+  --border: #30363d;
+
+  --text: #e6edf3;
+  --muted: #8b949e;
+
+  --green: #7ee787;
+  --blue: #79c0ff;
+  --purple: #d2a8ff;
+  --yellow: #f2cc60;
+  --red: #ff7b72;
+
+  --font-code: "Consolas", "Courier New", monospace;
+  --font-main: "Segoe UI", Arial, sans-serif;
+}
+
+/* Reset */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  background:
+    radial-gradient(
+      circle at top,
+      rgba(46, 160, 67, 0.09),
+      transparent 40%
+    ),
+    var(--bg);
+  color: var(--text);
+  font-family: var(--font-main);
+  line-height: 1.6;
+}
+
+/* Main application */
+
+.app {
+  width: min(100% - 32px, 1000px);
+  margin: 48px auto;
+}
+
+.screen {
+  overflow: hidden;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+  animation: screen-enter 0.5s ease both;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* Editor window header */
+
+.window-header {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 12px 18px;
+  background: #21262d;
+  border-bottom: 1px solid var(--border);
+}
+
+.window-dot {
+  width: 11px;
+  height: 11px;
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+
+.window-dot.red {
+  background: var(--red);
+}
+
+.window-dot.yellow {
+  background: var(--yellow);
+}
+
+.window-dot.green {
+  background: var(--green);
+}
+
+.window-title {
+  margin-left: 10px;
+  color: var(--muted);
+  font-family: var(--font-code);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+/* Opening screen */
+
+.boot-content {
+  min-height: 520px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: clamp(28px, 7vw, 76px);
+}
+
+.terminal-label {
+  margin-bottom: 16px;
+  color: var(--green);
+  font-family: var(--font-code);
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  overflow-wrap: anywhere;
+}
+
+.boot-content h1 {
+  margin-bottom: 8px;
+  font-family: var(--font-code);
+  font-size: clamp(32px, 7vw, 64px);
+  line-height: 1.15;
+  letter-spacing: -2px;
+}
+
+.boot-content h1 span {
+  color: var(--green);
+}
+
+.subtitle {
+  color: var(--purple);
+  font-family: var(--font-code);
+  font-size: clamp(12px, 2vw, 15px);
+  letter-spacing: 1px;
+}
+
+.terminal-output {
+  width: 100%;
+  margin: 34px 0;
+  padding: 22px;
+  background: #0d1117;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: var(--font-code);
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.terminal-output p + p {
+  margin-top: 8px;
+}
+
+.prompt {
+  color: var(--green);
+}
+
+.small-note {
+  margin-top: 22px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* Buttons */
+
+.primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 13px 20px;
+  background: var(--green);
+  color: #0d1117;
+  border: 1px solid var(--green);
+  border-radius: 6px;
+  font-family: var(--font-code);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.primary-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(126, 231, 135, 0.18);
+  background: #a3f5a9;
+}
+
+.primary-button:active {
+  transform: translateY(0);
+}
+
+.primary-button:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 4px;
+}
+
+/* Mission navigation */
+
+.mission-nav {
+  padding: 24px clamp(20px, 5vw, 48px);
+  border-bottom: 1px solid var(--border);
+}
+
+#mission-counter {
+  margin-bottom: 12px;
+  color: var(--green);
+  font-family: var(--font-code);
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.progress-track {
+  width: 100%;
+  height: 6px;
+  overflow: hidden;
+  background: #30363d;
+  border-radius: 99px;
+}
+
+.progress-bar {
+  width: 0%;
+  height: 100%;
+  background: var(--green);
+  border-radius: inherit;
+  transition: width 0.5s ease;
+}
+
+/* Mission content */
+
+.mission-content {
+  min-height: 340px;
+  padding: clamp(28px, 6vw, 60px);
+}
+
+.mission-content h2 {
+  margin-bottom: 16px;
+  font-size: clamp(26px, 5vw, 40px);
+  line-height: 1.2;
+}
+
+.mission-content > p:not(.terminal-label) {
+  max-width: 650px;
+  margin-bottom: 28px;
+  color: var(--muted);
+  font-size: 16px;
+}
+
+.mission-content .terminal-label {
+  margin-bottom: 18px;
+}
+
+.mission-content .primary-button {
+  margin-top: 8px;
+}
+
+/* Status bar */
+
+.status-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 18px;
+  padding: 10px 18px;
+  background: #21262d;
+  color: var(--muted);
+  font-family: var(--font-code);
+  font-size: 11px;
+  border-top: 1px solid var(--border);
+}
+
+/* Confetti layer */
+
+#confetti-container {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -20px;
+  width: 9px;
+  height: 14px;
+  border-radius: 2px;
+  animation: confetti-fall 3s linear forwards;
+}
+
+/* Animations */
+
+@keyframes screen-enter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-10px) rotate(0deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(110vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+/* Responsive layout */
+
+@media (max-width: 600px) {
+  .app {
+    width: calc(100% - 20px);
+    margin: 20px auto;
+  }
+
+  .boot-content {
+    min-height: 460px;
+    padding: 28px 20px;
+  }
+
+  .terminal-output {
+    padding: 16px;
+    font-size: 12px;
+  }
+
+  .mission-content {
+    min-height: 300px;
+    padding: 30px 20px;
+  }
+
+  .status-bar {
+    font-size: 10px;
+  }
+
+  .primary-button {
+    max-width: 100%;
+  }
+}
+
+/* Respect reduced-motion preferences */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
