@@ -25,16 +25,19 @@
     ====================================== -->
 
     <section id="boot-screen" class="screen">
+
       <header class="window-header">
         <span class="window-dot red"></span>
         <span class="window-dot yellow"></span>
         <span class="window-dot green"></span>
+
         <span class="window-title">
           birthday_v2.5.py — PROJECT LELO
         </span>
       </header>
 
       <div class="boot-content">
+
         <p class="terminal-label">
           SYSTEM.BOOT // BIRTHDAY PROTOCOL
         </p>
@@ -53,20 +56,36 @@
           One new chapter waiting to be explored.
         </p>
 
+
+        <!-- TERMINAL INITIALIZATION -->
+
         <div
           class="terminal-output"
           id="terminal-output"
           aria-live="polite"
+          aria-atomic="false"
         >
-          <p class="terminal-label">SYSTEM INITIALIZATION</p>
-          <p>
+          <p class="terminal-label">
+            SYSTEM INITIALIZATION
+          </p>
+
+          <p id="terminal-prompt">
             <span class="prompt">&gt;&gt;&gt;</span>
             Awaiting subject input<span class="typing-cursor">_</span>
           </p>
         </div>
 
-        <form id="initialization-form" class="initialization-form">
-          <label for="subject-name">Enter your name</label>
+
+        <!-- SUBJECT INPUT -->
+
+        <form
+          id="initialization-form"
+          class="initialization-form"
+        >
+
+          <label for="subject-name">
+            Enter your name
+          </label>
 
           <input
             id="subject-name"
@@ -78,7 +97,9 @@
             required
           >
 
-          <label for="subject-age">Enter your current age</label>
+          <label for="subject-age">
+            Enter your current age
+          </label>
 
           <input
             id="subject-age"
@@ -91,16 +112,27 @@
             required
           >
 
-          <button type="submit" class="primary-button">
+          <button
+            type="submit"
+            class="primary-button"
+            id="initialize-button"
+          >
             INITIALIZE MISSION →
           </button>
+
         </form>
+
+
+        <!-- SYSTEM INFORMATION -->
 
         <div class="boot-meta">
           <span>STATUS: READY</span>
           <span>ACCESS: AUTHORISED</span>
           <span>SUBJECT: LELO</span>
         </div>
+
+
+        <!-- SHOWN AFTER THE BOOT SEQUENCE -->
 
         <button
           id="start-mission"
@@ -115,6 +147,7 @@
         <p class="small-note">
           A birthday experience compiled with care.
         </p>
+
       </div>
     </section>
 
@@ -123,20 +156,27 @@
          MAIN MISSION CONTROL
     ====================================== -->
 
-    <section id="mission-screen" class="screen" hidden>
+    <section
+      id="mission-screen"
+      class="screen"
+      hidden
+    >
 
       <header class="window-header">
         <span class="window-dot red"></span>
         <span class="window-dot yellow"></span>
         <span class="window-dot green"></span>
+
         <span class="window-title">
           mission_control.exe — PROJECT LELO
         </span>
       </header>
 
-      <!-- Dashboard heading -->
+
+      <!-- DASHBOARD HEADING -->
 
       <div class="dashboard-header">
+
         <div>
           <p class="terminal-label">
             PROJECT LELO // PRIVATE BUILD
@@ -152,23 +192,40 @@
         </div>
 
         <div class="version-card">
-          <span class="version-label">CURRENT BUILD</span>
-          <strong id="version-number">v2.5</strong>
+
+          <span class="version-label">
+            CURRENT BUILD
+          </span>
+
+          <strong id="version-number">
+            v2.5
+          </strong>
 
           <span class="version-status">
             <span class="status-indicator"></span>
             RUNNING
           </span>
+
         </div>
+
       </div>
 
 
-      <!-- Progress tracker -->
+      <!-- PROGRESS TRACKER -->
 
-      <nav class="mission-nav" aria-label="Mission progress">
+      <nav
+        class="mission-nav"
+        aria-label="Mission progress"
+      >
+
         <div class="mission-nav-top">
-          <p id="mission-counter">MISSION 01 / 06</p>
-          <p id="progress-text">0% COMPLETE</p>
+          <p id="mission-counter">
+            MISSION 01 / 06
+          </p>
+
+          <p id="progress-text">
+            0% COMPLETE
+          </p>
         </div>
 
         <div
@@ -180,15 +237,25 @@
           aria-valuemax="100"
           aria-valuenow="0"
         >
-          <div id="progress-bar" class="progress-bar"></div>
+          <div
+            id="progress-bar"
+            class="progress-bar"
+          ></div>
         </div>
+
       </nav>
 
 
-      <!-- Six data-science objectives -->
+      <!-- SIX DATA-SCIENCE OBJECTIVES -->
 
-      <nav class="objective-list" aria-label="Mission objectives">
-        <p class="objective-heading">MISSION OBJECTIVES</p>
+      <nav
+        class="objective-list"
+        aria-label="Mission objectives"
+      >
+
+        <p class="objective-heading">
+          MISSION OBJECTIVES
+        </p>
 
         <div class="objective-grid">
 
@@ -200,8 +267,11 @@
             aria-label="Open mission 1: Data Acquisition"
           >
             <span class="objective-number">01</span>
-            <span class="objective-name">Data Acquisition</span>
+            <span class="objective-name">
+              Data Acquisition
+            </span>
           </div>
+
 
           <div
             class="objective-item"
@@ -211,8 +281,11 @@
             aria-label="Open mission 2: Data Cleaning and EDA"
           >
             <span class="objective-number">02</span>
-            <span class="objective-name">Data Cleaning &amp; EDA</span>
+            <span class="objective-name">
+              Data Cleaning &amp; EDA
+            </span>
           </div>
+
 
           <div
             class="objective-item"
@@ -222,8 +295,11 @@
             aria-label="Open mission 3: Data Visualisation"
           >
             <span class="objective-number">03</span>
-            <span class="objective-name">Data Visualisation</span>
+            <span class="objective-name">
+              Data Visualisation
+            </span>
           </div>
+
 
           <div
             class="objective-item"
@@ -233,8 +309,11 @@
             aria-label="Open mission 4: Model Evaluation"
           >
             <span class="objective-number">04</span>
-            <span class="objective-name">Model Evaluation</span>
+            <span class="objective-name">
+              Model Evaluation
+            </span>
           </div>
+
 
           <div
             class="objective-item"
@@ -244,8 +323,11 @@
             aria-label="Open mission 5: Interpretation and Insights"
           >
             <span class="objective-number">05</span>
-            <span class="objective-name">Interpretation &amp; Insights</span>
+            <span class="objective-name">
+              Interpretation &amp; Insights
+            </span>
           </div>
+
 
           <div
             class="objective-item"
@@ -255,14 +337,16 @@
             aria-label="Open mission 6: Final Birthday Report"
           >
             <span class="objective-number">06</span>
-            <span class="objective-name">Final Birthday Report</span>
+            <span class="objective-name">
+              Final Birthday Report
+            </span>
           </div>
 
         </div>
       </nav>
 
 
-      <!-- JavaScript renders the active mission here -->
+      <!-- ACTIVE MISSION CONTENT -->
 
       <section
         id="mission-content"
@@ -270,23 +354,31 @@
         aria-live="polite"
         aria-atomic="true"
       >
-        <p class="terminal-label">SYSTEM READY</p>
 
-        <h2>Awaiting mission launch.</h2>
+        <p class="terminal-label">
+          SYSTEM READY
+        </p>
+
+        <h2>
+          Awaiting mission launch.
+        </h2>
 
         <p>
-          Initialize the subject profile to begin the six-stage
-          data science birthday experience.
+          Initialize the subject profile to begin the
+          six-stage data science birthday experience.
         </p>
+
       </section>
 
 
-      <!-- Dashboard footer -->
+      <!-- DASHBOARD FOOTER -->
 
       <footer class="status-bar">
         <span>PROJECT LELO</span>
         <span>VERSION 2.5</span>
-        <span id="system-status">AWAITING INITIALIZATION</span>
+        <span id="system-status">
+          AWAITING INITIALIZATION
+        </span>
       </footer>
 
     </section>
