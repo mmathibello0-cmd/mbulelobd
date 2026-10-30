@@ -1,1480 +1,620 @@
 
-/* =====================================================
+/* =========================================
    PROJECT LELO | MISSION 25
-   Birthday mission controller
-   Six-stage data science experience
-===================================================== */
+   MAIN JAVASCRIPT
+========================================= */
 
 
-/* ---------- 1. ELEMENT REFERENCES ---------- */
+/* =========================================
+   01. ELEMENT REFERENCES
+========================================= */
 
-const startButton = document.getElementById("start-mission");
 const bootScreen = document.getElementById("boot-screen");
 const missionScreen = document.getElementById("mission-screen");
-const missionContent = document.getElementById("mission-content");
 
-const missionCounter = document.getElementById("mission-counter");
-const progressBar = document.getElementById("progress-bar");
-const progressTrack = document.getElementById("progress-track");
-const progressText = document.getElementById("progress-text");
+const initializationForm = document.getElementById(
+  "initialization-form"
+);
 
-const confettiContainer = document.getElementById("confetti-container");
-const systemStatus = document.getElementById("system-status");
-const objectiveItems = document.querySelectorAll(".objective-item");
+const nameInput = document.getElementById("subject-name");
+const ageInput = document.getElementById("subject-age");
 
-const initializationForm = document.getElementById("initialization-form");
-const terminalOutput = document.getElementById("terminal-output");
-const subjectNameInput = document.getElementById("subject-name");
-const subjectAgeInput = document.getElementById("subject-age");
+const initializeButton = document.getElementById(
+  "initialize-button"
+);
 
-const TOTAL_MISSIONS = 6;
+const terminalOutput = document.getElementById(
+  "terminal-output"
+);
 
+const terminalPrompt = document.getElementById(
+  "terminal-prompt"
+);
+
+const startMissionButton = document.getElementById(
+  "start-mission"
+);
+
+const missionContent = document.getElementById(
+  "mission-content"
+);
+
+const versionNumber = document.getElementById(
+  "version-number"
+);
+
+const missionCounter = document.getElementById(
+  "mission-counter"
+);
+
+const progressText = document.getElementById(
+  "progress-text"
+);
+
+const progressBar = document.getElementById(
+  "progress-bar"
+);
+
+const progressTrack = document.getElementById(
+  "progress-track"
+);
+
+const systemStatus = document.getElementById(
+  "system-status"
+);
+
+const objectiveItems = document.querySelectorAll(
+  ".objective-item"
+);
+
+
+/* =========================================
+   02. SUBJECT PROFILE
+========================================= */
+
+let subjectName = "";
+let subjectAge = 0;
 let currentMission = 0;
-let maxUnlockedMission = 0;
-let missionStarted = false;
-let missionCompleted = false;
-let subjectName = "Lelo";
-let subjectAge = 25;
-let projectVersion = "2.5";
-let initializationInProgress = false;
+
+const visitedMissions = new Set();
+
+let initializationComplete = false;
 
 
-/* ---------- 2. HELPER FUNCTIONS ---------- */
-
-function escapeHTML(value) {
-  return String(value).replace(/[&<>"']/g, character => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;"
-  })[character]);
-}
-
-function formatTime(seconds) {
-  if (!Number.isFinite(seconds) || seconds < 0) {
-    return "0:00";
-  }
-
-  const minutes = Math.floor(seconds / 60);
-  const remainingSeconds = Math.floor(seconds % 60);
-
-  return `${minutes}:${String(remainingSeconds).padStart(2, "0")}`;
-}
-
-function updateSystemStatus(message) {
-  if (systemStatus) {
-    systemStatus.textContent = message;
-  }
-}
-
-function delay(milliseconds) {
-  return new Promise(resolve => setTimeout(resolve, milliseconds));
-}
-
-
-/* ---------- 3. MISSION DEFINITIONS ---------- */
+/* =========================================
+   03. MISSION DATA
+========================================= */
 
 const missions = [
+
   {
-    title: "DECODE 2001",
-    label: "MISSION 01",
-    command: "acquire_historical_data()",
-    button: "CONTINUE TO DATA CLEANING"
+    number: "01",
+    title: "Data Acquisition",
+    label: "MISSION 01 // THE BEGINNING",
+
+    description:
+      "Every great discovery starts somewhere. Before we can analyse a subject, we need to understand the data that makes up the story.",
+
+    detail:
+      "This is where the investigation begins. The subject profile has been created. Now it's time to explore the information, experiences and possibilities that make this individual unique.",
+
+    prompt:
+      "OBJECTIVE: IDENTIFY THE SUBJECT'S CORE DATA."
   },
+
   {
-    title: "DATA CLEANING & EDA",
-    label: "MISSION 02",
-    command: "clean_and_explore(dataset)",
-    button: "VISUALISE THE DATA"
+    number: "02",
+    title: "Data Cleaning & EDA",
+    label: "MISSION 02 // LOOKING CLOSER",
+
+    description:
+      "Raw data rarely tells the whole story. Sometimes the most interesting discoveries are hidden beneath the surface.",
+
+    detail:
+      "Explore the patterns, unexpected details and little contradictions that make a person who they are. Not everything can be understood at first glance.",
+
+    prompt:
+      "OBJECTIVE: EXPLORE THE PATTERNS."
   },
+
   {
-    title: "DATA VISUALISATION",
-    label: "MISSION 03",
-    command: "visualise_observations()",
-    button: "EVALUATE THE MODEL"
+    number: "03",
+    title: "Data Visualisation",
+    label: "MISSION 03 // SEEING THE BIGGER PICTURE",
+
+    description:
+      "Numbers can tell a story. Patterns can reveal a bigger picture. And sometimes, the most meaningful things cannot be expressed through numbers alone.",
+
+    detail:
+      "Transform observations into something visual. Discover how different elements connect, overlap and create a picture that is uniquely yours.",
+
+    prompt:
+      "OBJECTIVE: TURN DATA INTO A STORY."
   },
+
   {
-    title: "MODEL EVALUATION",
-    label: "MISSION 04",
-    command: "evaluate_model()",
-    button: "INTERPRET THE RESULTS"
+    number: "04",
+    title: "Model Evaluation",
+    label: "MISSION 04 // TESTING THE THEORY",
+
+    description:
+      "A good model is never accepted without examination. Every prediction deserves a second look.",
+
+    detail:
+      "Consider the decisions, lessons and experiences that have shaped the subject so far. Evaluate the progress, recognise the growth and remember that development is ongoing.",
+
+    prompt:
+      "OBJECTIVE: MEASURE THE PROGRESS."
   },
+
   {
-    title: "INTERPRETATION & INSIGHTS",
-    label: "MISSION 05",
-    command: "interpret_results()",
-    button: "GENERATE THE FINAL REPORT"
+    number: "05",
+    title: "Interpretation & Insights",
+    label: "MISSION 05 // BEYOND THE NUMBERS",
+
+    description:
+      "Data becomes meaningful when we understand what it represents. The real story often goes beyond the results.",
+
+    detail:
+      "Look beyond the obvious. Consider identity, creativity, heritage, ambition and the experiences that give meaning to the journey.",
+
+    prompt:
+      "OBJECTIVE: DISCOVER WHAT THE DATA CANNOT SAY."
   },
+
   {
-    title: "FINAL BIRTHDAY REPORT",
-    label: "MISSION 06",
-    command: "generate_birthday_report()",
-    button: "EXECUTE FINAL CELEBRATION"
+    number: "06",
+    title: "Final Birthday Report",
+    label: "MISSION 06 // THE FINAL REPORT",
+
+    description:
+      "Twenty-five years of data. Countless experiences. An entirely new chapter waiting to unfold.",
+
+    detail:
+      "The investigation reaches its final stage. All objectives lead here, to a celebration of the person behind the profile and the possibilities still ahead.",
+
+    prompt:
+      "OBJECTIVE: GENERATE THE FINAL REPORT."
   }
+
 ];
 
 
-/* ---------- 4. LINE-BY-LINE INITIALIZATION ---------- */
+/* =========================================
+   04. HELPER: WAIT
+========================================= */
 
-/**
- * Prints the initialization log progressively.
- * Each new line fades in before the next line appears.
- */
-async function loadTerminalLines(name, age, version) {
-  const output = document.getElementById("terminal-output");
-
-  if (!output) {
-    console.error("PROJECT LELO: #terminal-output was not found.");
-    return;
-  }
-
-  const lines = [
-    "> Initializing PROJECT LELO...",
-    "> Loading Python environment...",
-    "> Loading R analysis modules...",
-    "> Establishing subject profile...",
-    `> Subject identified: ${name}`,
-    `> Chronological age: ${age}`,
-    `> Project version: ${version}`,
-    "> Preparing data pipeline...",
-    "> All systems ready."
-  ];
-
-  // Clear any previous log.
-  output.replaceChildren();
-
-  // Add the heading.
-  const heading = document.createElement("p");
-  heading.className = "terminal-label";
-  heading.textContent = "INITIALIZATION LOG";
-  output.appendChild(heading);
-
-  // Print one line, pause, then print the next.
-  for (const message of lines) {
-    const line = document.createElement("p");
-    line.className = "terminal-line";
-    line.textContent = message;
-
-    // Start the line hidden.
-    line.style.opacity = "0";
-    line.style.transform = "translateY(5px)";
-    line.style.transition =
-      "opacity 0.3s ease, transform 0.3s ease";
-
-    output.appendChild(line);
-
-    // Force the browser to register the initial hidden state.
-    void line.offsetHeight;
-
-    // Fade the line into view.
-    line.style.opacity = "1";
-    line.style.transform = "translateY(0)";
-
-    // Wait before appending the next line.
-    await delay(700);
-  }
-
-  // Display the success message after all lines have appeared.
-  const successLine = document.createElement("p");
-  successLine.className = "success-line";
-  successLine.textContent =
-    "[SUCCESS] Subject profile initialized.";
-
-  output.appendChild(successLine);
-}
-
-
-/* ---------- 5. INITIALIZATION FORM ---------- */
-
-function initializeProject() {
-  if (
-    !initializationForm ||
-    !terminalOutput ||
-    !startButton ||
-    !subjectNameInput ||
-    !subjectAgeInput
-  ) {
-    console.error(
-      "PROJECT LELO: One or more initialization elements are missing. Check the IDs in index.html."
-    );
-    return;
-  }
-
-  startButton.hidden = true;
-  startButton.disabled = true;
-
-  initializationForm.addEventListener("submit", async event => {
-    event.preventDefault();
-
-    // Prevent another submission during the animation.
-    if (initializationInProgress) return;
-
-    const submitButton = initializationForm.querySelector(
-      'button[type="submit"], input[type="submit"]'
-    );
-
-    const enteredName = String(subjectNameInput.value).trim();
-    const enteredAge = Number(subjectAgeInput.value);
-
-    // Validate the profile before starting the animation.
-    if (
-      !enteredName ||
-      !Number.isInteger(enteredAge) ||
-      enteredAge < 1 ||
-      enteredAge > 120
-    ) {
-      terminalOutput.replaceChildren();
-
-      const errorLine = document.createElement("p");
-      errorLine.className = "code-error";
-      errorLine.textContent =
-        "> ERROR: Enter a valid name and age.";
-
-      terminalOutput.appendChild(errorLine);
-      return;
-    }
-
-    // Save the submitted details.
-    subjectName = enteredName.slice(0, 40);
-    subjectAge = enteredAge;
-    projectVersion = (enteredAge / 10).toFixed(1);
-
-    initializationInProgress = true;
-
-    if (submitButton) {
-      submitButton.disabled = true;
-    }
-
-    startButton.hidden = true;
-    startButton.disabled = true;
-
-    const versionNumber = document.getElementById("version-number");
-
-    if (versionNumber) {
-      versionNumber.textContent = `v${projectVersion}`;
-    }
-
-    updateSystemStatus("INITIALIZING PROJECT...");
-
-    try {
-      // IMPORTANT: wait for every terminal line to appear.
-      await loadTerminalLines(
-        subjectName,
-        subjectAge,
-        projectVersion
-      );
-
-      // Only enable the mission after the log is complete.
-      startButton.hidden = false;
-      startButton.disabled = false;
-
-      updateSystemStatus("INITIALIZATION COMPLETE");
-    } catch (error) {
-      console.error("Initialization failed:", error);
-      updateSystemStatus("INITIALIZATION ERROR");
-
-      const errorLine = document.createElement("p");
-      errorLine.className = "code-error";
-      errorLine.textContent =
-        "> ERROR: Initialization failed. Please try again.";
-
-      terminalOutput.appendChild(errorLine);
-    } finally {
-      initializationInProgress = false;
-
-      if (submitButton) {
-        submitButton.disabled = false;
-      }
-    }
+function wait(milliseconds) {
+  return new Promise(resolve => {
+    setTimeout(resolve, milliseconds);
   });
 }
 
 
-/* ---------- 6. START THE MISSION ---------- */
+/* =========================================
+   05. TERMINAL MESSAGE CREATION
+========================================= */
 
-function startMission() {
-  if (!startButton || startButton.disabled || missionStarted) {
-    return;
-  }
+function addTerminalLine(message) {
 
-  missionStarted = true;
-  missionCompleted = false;
-  currentMission = 0;
-  maxUnlockedMission = 0;
+  const line = document.createElement("p");
 
-  if (bootScreen) {
-    bootScreen.hidden = true;
-  }
+  line.classList.add("terminal-line");
 
-  if (missionScreen) {
-    missionScreen.hidden = false;
-  }
+  const prompt = document.createElement("span");
 
-  updateSystemStatus("MISSION INITIALIZED");
-  renderMission();
+  prompt.classList.add("prompt");
+  prompt.textContent = ">>>";
 
-  if (missionScreen) {
-    missionScreen.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
-    });
-  }
-}
+  line.appendChild(prompt);
 
-if (startButton) {
-  startButton.addEventListener("click", startMission);
-}
-
-
-/* ---------- 7. PROGRESS TRACKER ---------- */
-
-function updateProgress() {
-  const percentage = missionCompleted
-    ? 100
-    : Math.round((currentMission / TOTAL_MISSIONS) * 100);
-
-  if (missionCounter) {
-    missionCounter.textContent = missionCompleted
-      ? "ALL MISSIONS COMPLETE"
-      : `MISSION ${String(currentMission + 1).padStart(2, "0")} / ${TOTAL_MISSIONS}`;
-  }
-
-  if (progressBar) {
-    progressBar.style.width = `${percentage}%`;
-    progressBar.setAttribute("aria-valuenow", String(percentage));
-  }
-
-  if (progressTrack) {
-    progressTrack.setAttribute("aria-valuenow", String(percentage));
-  }
-
-  if (progressText) {
-    progressText.textContent = `${percentage}% COMPLETE`;
-  }
-}
-
-function updateObjectives() {
-  objectiveItems.forEach((item, index) => {
-    const isCurrent = index === currentMission && !missionCompleted;
-    const isUnlocked = index <= maxUnlockedMission;
-    const isCompleted = missionCompleted || index < currentMission;
-
-    item.classList.toggle("active", isCurrent);
-    item.classList.toggle("completed", isCompleted);
-    item.classList.toggle("locked", !isUnlocked);
-
-    item.setAttribute("aria-current", isCurrent ? "step" : "false");
-    item.setAttribute("aria-disabled", String(!isUnlocked));
-
-    if (isUnlocked) {
-      item.removeAttribute("tabindex");
-      item.setAttribute("tabindex", "0");
-    } else {
-      item.setAttribute("tabindex", "-1");
-    }
-  });
-}
-
-
-/* ---------- 8. RENDER THE CURRENT MISSION ---------- */
-
-function renderMission() {
-  const mission = missions[currentMission];
-
-  if (!mission || !missionContent) return;
-
-  updateProgress();
-  updateObjectives();
-  updateSystemStatus(`RUNNING ${mission.label}`);
-
-  let content = "";
-
-  switch (currentMission) {
-    case 0:
-      content = renderDataAcquisition();
-      break;
-
-    case 1:
-      content = renderDataCleaning();
-      break;
-
-    case 2:
-      content = renderDataVisualisation();
-      break;
-
-    case 3:
-      content = renderModelEvaluation();
-      break;
-
-    case 4:
-      content = renderInsights();
-      break;
-
-    case 5:
-      content = renderBirthdayReport();
-      break;
-  }
-
-  missionContent.innerHTML = `
-    <p class="terminal-label">
-      &gt;&gt;&gt; ${mission.command}
-    </p>
-
-    ${content}
-
-    <button
-      type="button"
-      id="next-mission"
-      class="primary-button"
-    >
-      ${mission.button} →
-    </button>
-  `;
-
-  document.getElementById("next-mission").addEventListener(
-    "click",
-    advanceMission
+  line.appendChild(
+    document.createTextNode(" " + message)
   );
 
-  if (currentMission === 2) {
-    setupAudioPlayer();
-  }
+  terminalOutput.appendChild(line);
+
+  return line;
 }
 
 
-/* ---------- 9. MISSION 01: DATA ACQUISITION ---------- */
+/* =========================================
+   06. BOOT SEQUENCE
+========================================= */
 
-function renderDataAcquisition() {
-  return `
-    <h2>DECODE <span style="color:var(--green)">2001</span></h2>
+async function runBootSequence() {
 
-    <p>
-      Every investigation begins with a question. Before analysing
-      our subject, we explore a landmark year in scientific research.
-    </p>
+  const bootMessages = [
 
-    <div class="terminal-output">
-      <p><span class="prompt">&gt;&gt;&gt;</span> import research_data</p>
-      <p><span class="prompt">&gt;&gt;&gt;</span> birth_year = 2001</p>
-      <p><span class="prompt">&gt;&gt;&gt;</span> research_topic = "human genome"</p>
-      <p class="success-line">[SUCCESS] Historical context acquired.</p>
-    </div>
+    "INITIALIZING PROJECT LELO...",
 
-    <div class="detail-grid">
-      <article class="detail-card">
-        <span class="card-label">RESEARCH YEAR</span>
-        <span class="card-value">2001</span>
-        <span class="card-description">
-          A landmark year for human genome research.
-        </span>
-      </article>
+    `SUBJECT IDENTIFIED: ${subjectName.toUpperCase()}`,
 
-      <article class="detail-card">
-        <span class="card-label">RESEARCH FIELD</span>
-        <span class="card-value">GENOMICS</span>
-        <span class="card-description">
-          Studying the genetic information of organisms.
-        </span>
-      </article>
-    </div>
+    `AGE VERIFIED: ${subjectAge}`,
 
-    <div class="timeline">
-      <article class="timeline-item">
-        <span class="timeline-date">FEBRUARY 2001</span>
-        <h3>The human genome comes into focus</h3>
-        <p>
-          Landmark draft analyses of the human genome were published
-          in Nature and Science, helping researchers understand
-          the human genetic blueprint.
-        </p>
-      </article>
+    `PROFILE CREATED: VERSION ${(subjectAge / 10).toFixed(1)}`,
 
-      <article class="timeline-item">
-        <span class="timeline-date">DECEMBER 2001</span>
-        <h3>More of the code is decoded</h3>
-        <p>
-          A detailed analysis of chromosome 20 was published in Nature,
-          contributing to scientific understanding of the genome.
-        </p>
-      </article>
+    "LOADING SIX MISSION OBJECTIVES...",
 
-      <article class="timeline-item">
-        <span class="timeline-date">SUBJECT RECORD</span>
-        <h3>Introducing ${escapeHTML(subjectName)}</h3>
-        <p>
-          The personal dataset begins here. Every subject has a story
-          that extends beyond a collection of records.
-        </p>
-      </article>
-    </div>
+    "PERSONALIZED EXPERIENCE READY.",
 
-    <div class="info-panel">
-      <p>
-        <strong>WHY THIS MATTERS:</strong>
-        Bioinformatics combines biology, statistics and computing
-        to help researchers make sense of biological data.
-        Good analysis begins by understanding the source.
-      </p>
-    </div>
+    "ACCESS GRANTED."
 
-    <div class="terminal-output">
-      <p><span class="prompt">&gt;&gt;&gt;</span> inspect(data_source)</p>
-      <p>source_status = "ACQUIRED"</p>
-      <p>next_step = "DATA CLEANING"</p>
-      <p class="success-line">[READY] Proceed to preprocessing.</p>
-    </div>
-  `;
-}
-
-
-/* ---------- 10. MISSION 02: DATA CLEANING & EDA ---------- */
-
-function renderDataCleaning() {
-  const rawDataset = [
-    { feature: "Curiosity", value: "High" },
-    { feature: "Coding & competitions", value: "Detected" },
-    { feature: "Scientific interests", value: "Detected" },
-    { feature: "Goofiness", value: "Confirmed" },
-    { feature: "Smile effect", value: null }
   ];
 
-  const missingValues = rawDataset.filter(
-    record => record.value === null
-  ).length;
+  // Remove the original waiting prompt.
 
-  const cleanedDataset = rawDataset.map(record => ({
-    feature: record.feature,
-    value: record.value === null
-      ? "Not objectively measured"
-      : record.value
-  }));
-
-  return `
-    <h2>DATA CLEANING &amp; EXPLORATION</h2>
-
-    <p>
-      Before building a model, we inspect the raw records, identify
-      missing values and prepare the dataset for exploration.
-    </p>
-
-    <div class="terminal-output">
-      <p><span class="prompt">&gt;&gt;&gt;</span> import pandas as pd</p>
-      <p><span class="prompt">&gt;&gt;&gt;</span> df = load_subject_dataset()</p>
-      <p><span class="prompt">&gt;&gt;&gt;</span> df.head()</p>
-      <p>   feature                 value</p>
-      <p>0  curiosity               High</p>
-      <p>1  coding                  Detected</p>
-      <p>2  scientific_interests    Detected</p>
-      <p>3  goofiness               Confirmed</p>
-      <p>4  smile_effect            NaN</p>
-      <p class="success-line">[OUTPUT] Initial records loaded.</p>
-    </div>
-
-    <div class="detail-grid">
-      <article class="detail-card">
-        <span class="card-label">RECORDS LOADED</span>
-        <span class="card-value">${rawDataset.length}</span>
-        <span class="card-description">
-          Qualitative observations in the demonstration dataset.
-        </span>
-      </article>
-
-      <article class="detail-card">
-        <span class="card-label">MISSING VALUES</span>
-        <span class="card-value">${missingValues}</span>
-        <span class="card-description">
-          One field cannot be objectively measured.
-        </span>
-      </article>
-    </div>
-
-    <div class="terminal-output">
-      <p><span class="prompt">&gt;&gt;&gt;</span> df.isnull().sum()</p>
-      <p>smile_effect    ${missingValues}</p>
-      <p class="success-line">
-        [SUCCESS] Missing data identified.
-      </p>
-    </div>
-
-    <h3>Cleaned dataset</h3>
-
-    <div class="table-wrapper">
-      <table class="data-table">
-        <thead>
-          <tr>
-            <th>FEATURE</th>
-            <th>VALUE</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          ${cleanedDataset.map(record => `
-            <tr>
-              <td>${escapeHTML(record.feature)}</td>
-              <td>${escapeHTML(record.value)}</td>
-            </tr>
-          `).join("")}
-        </tbody>
-      </table>
-    </div>
-
-    <div class="info-panel">
-      <p>
-        <strong>DATA QUALITY NOTE:</strong>
-        Missing data should not automatically be replaced with
-        an invented value. Here, the smile effect is a playful
-        observation, not a measurable scientific variable.
-      </p>
-    </div>
-
-    <h3>Exploratory observations</h3>
-
-    <div class="detail-grid">
-      ${cleanedDataset.map(record => `
-        <article class="detail-card">
-          <span class="card-label">${escapeHTML(record.feature)}</span>
-          <span class="card-value">
-            ${record.value === "Not objectively measured"
-              ? "UNKNOWN"
-              : escapeHTML(record.value.toUpperCase())}
-          </span>
-          <span class="card-description">
-            ${record.value === "Not objectively measured"
-              ? "Insufficient measurable evidence"
-              : "Qualitative observation"}
-          </span>
-        </article>
-      `).join("")}
-    </div>
-
-    <div class="terminal-output">
-      <p><span class="prompt">&gt;&gt;&gt;</span> df.describe()</p>
-      <p>qualitative_features = ${rawDataset.length}</p>
-      <p>numeric_measurements = 0</p>
-      <p>statistical_inference = "NOT APPLICABLE"</p>
-      <p class="success-line">[READY] Proceed to visualisation.</p>
-    </div>
-  `;
-}
-
-
-/* ---------- 11. MISSION 03: DATA VISUALISATION ---------- */
-
-function createWaveform() {
-  return Array.from({ length: 36 }, (_, index) => {
-    const height = 8 + ((index * 17 + 11) % 35);
-
-    const colour = index % 4 === 0
-      ? "var(--purple)"
-      : index % 3 === 0
-        ? "var(--blue)"
-        : "var(--green)";
-
-    return `
-      <span
-        class="waveform-bar"
-        style="
-          display:block;
-          flex:0 0 4px;
-          height:${height}px;
-          border-radius:4px;
-          background:${colour};
-          opacity:0.8;
-        "
-      ></span>
-    `;
-  }).join("");
-}
-
-function renderDataVisualisation() {
-  return `
-    <h2>DATA VISUALISATION</h2>
-
-    <p>
-      Visualisations help make information easier to explore.
-      This stage includes a waveform-inspired display and the
-      soundtrack selected for the birthday mission.
-    </p>
-
-    <div class="terminal-output">
-      <p><span class="prompt">&gt;&gt;&gt;</span> import matplotlib.pyplot as plt</p>
-      <p><span class="prompt">&gt;&gt;&gt;</span> features = ["Curiosity", "Coding", "Goofiness"]</p>
-      <p><span class="prompt">&gt;&gt;&gt;</span> plot_features(features)</p>
-      <p class="success-line">[OUTPUT] Visualisation module initialized.</p>
-    </div>
-
-    <article class="detail-card" style="margin:24px 0">
-      <span class="card-label">AUDIO FEATURE // TRACK 001</span>
-
-      <div style="
-        display:flex;
-        align-items:center;
-        gap:16px;
-        margin:16px 0;
-      ">
-        <div style="
-          width:62px;
-          height:62px;
-          flex-shrink:0;
-          display:grid;
-          place-items:center;
-          border:1px solid var(--border-bright);
-          border-radius:10px;
-          background:linear-gradient(135deg,#173d28,#172638);
-          color:var(--green);
-          font-size:26px;
-        " aria-hidden="true">♪</div>
-
-        <div>
-          <h3 style="font-size:17px">Chrome Heart Diaper Bag</h3>
-          <p style="color:var(--muted);font-size:12px">
-            Latto // Local audio file
-          </p>
-        </div>
-      </div>
-
-      <div
-        id="audio-waveform"
-        aria-label="Decorative audio waveform"
-        style="
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          gap:4px;
-          height:70px;
-          margin:20px 0;
-          overflow:hidden;
-        "
-      >
-        ${createWaveform()}
-      </div>
-
-      <audio id="lelo-audio" preload="metadata">
-        <source
-          src="Latto - Chrome Heart Diaper Bag (Audio).mp3"
-          type="audio/mpeg"
-        >
-        Your browser does not support audio playback.
-      </audio>
-
-      <button
-        id="play-audio-button"
-        type="button"
-        class="primary-button"
-        style="width:100%"
-        aria-pressed="false"
-      >
-        ▶ PLAY TRACK
-      </button>
-
-      <div style="margin-top:20px">
-        <input
-          id="audio-progress"
-          type="range"
-          min="0"
-          max="100"
-          value="0"
-          step="0.1"
-          aria-label="Song progress"
-          style="width:100%;accent-color:var(--green)"
-        >
-
-        <div style="
-          display:flex;
-          justify-content:space-between;
-          color:var(--muted);
-          font-size:11px;
-        ">
-          <span id="audio-current-time">0:00</span>
-          <span id="audio-duration">0:00</span>
-        </div>
-      </div>
-
-      <p
-        id="audio-player-status"
-        role="status"
-        style="
-          margin-top:12px;
-          color:var(--muted);
-          font-size:11px;
-          text-align:center;
-        "
-      >
-        Ready to play. Press the button when you're ready.
-      </p>
-    </article>
-
-    <div class="info-panel">
-      <p>
-        <strong>INTERPRETATION NOTE:</strong>
-        This waveform is decorative, not a live frequency analysis.
-        The qualitative observations are not scientifically measured
-        personality scores.
-      </p>
-    </div>
-
-    <div class="terminal-output">
-      <p><span class="prompt">&gt;&gt;&gt;</span> visualisation_status()</p>
-      <p>charts = "READY"</p>
-      <p>audio_module = "LOADED"</p>
-      <p>next_step = "MODEL EVALUATION"</p>
-      <p class="success-line">[SUCCESS] Visualisation stage complete.</p>
-    </div>
-  `;
-}
-
-
-/* ---------- 12. AUDIO PLAYER ---------- */
-
-function setupAudioPlayer() {
-  const audio = document.getElementById("lelo-audio");
-  const playButton = document.getElementById("play-audio-button");
-  const progress = document.getElementById("audio-progress");
-  const currentTimeDisplay = document.getElementById("audio-current-time");
-  const durationDisplay = document.getElementById("audio-duration");
-  const status = document.getElementById("audio-player-status");
-
-  if (!audio || !playButton || !progress) return;
-
-  function updateProgress() {
-    if (Number.isFinite(audio.duration) && audio.duration > 0) {
-      progress.value = String(
-        (audio.currentTime / audio.duration) * 100
-      );
-    } else {
-      progress.value = "0";
-    }
-
-    if (currentTimeDisplay) {
-      currentTimeDisplay.textContent = formatTime(audio.currentTime);
-    }
-
-    if (durationDisplay) {
-      durationDisplay.textContent = formatTime(audio.duration);
-    }
+  if (terminalPrompt) {
+    terminalPrompt.remove();
   }
 
-  function setPlayingState(playing) {
-    playButton.textContent = playing
-      ? "Ⅱ PAUSE TRACK"
-      : "▶ PLAY TRACK";
+  // Display each message individually.
 
-    playButton.setAttribute("aria-pressed", String(playing));
+  for (let i = 0; i < bootMessages.length; i++) {
+
+    await wait(850);
+
+    addTerminalLine(bootMessages[i]);
+
   }
 
-  playButton.addEventListener("click", async () => {
-    if (audio.paused) {
-      try {
-        await audio.play();
-      } catch (error) {
-        console.error("Audio playback failed:", error);
+  // Short pause after the final message.
 
-        if (status) {
-          status.textContent =
-            "Unable to play audio. Check that the MP3 file is in the project folder.";
-        }
-      }
-    } else {
-      audio.pause();
-    }
-  });
+  await wait(1000);
 
-  audio.addEventListener("play", () => {
-    setPlayingState(true);
+  initializationComplete = true;
 
-    if (status) {
-      status.textContent = "PLAYING AUDIO...";
-    }
-  });
+  // Reveal the mission launch button.
 
-  audio.addEventListener("pause", () => {
-    setPlayingState(false);
+  startMissionButton.hidden = false;
+  startMissionButton.disabled = false;
 
-    if (status && !audio.ended) {
-      status.textContent = "AUDIO PAUSED.";
-    }
-  });
+  systemStatus.textContent = "PROFILE INITIALIZED";
 
-  audio.addEventListener("timeupdate", updateProgress);
-  audio.addEventListener("loadedmetadata", updateProgress);
-  audio.addEventListener("durationchange", updateProgress);
-
-  audio.addEventListener("ended", () => {
-    setPlayingState(false);
-    progress.value = "0";
-
-    if (currentTimeDisplay) {
-      currentTimeDisplay.textContent = "0:00";
-    }
-
-    if (status) {
-      status.textContent = "TRACK COMPLETE.";
-    }
-  });
-
-  audio.addEventListener("error", () => {
-    if (status) {
-      status.textContent =
-        "Audio file unavailable. Check the filename and folder location.";
-    }
-  });
-
-  progress.addEventListener("input", () => {
-    if (Number.isFinite(audio.duration) && audio.duration > 0) {
-      audio.currentTime =
-        (Number(progress.value) / 100) * audio.duration;
-    }
-  });
-
-  updateProgress();
 }
 
 
-/* ---------- 13. MISSION 04: MODEL EVALUATION ---------- */
+/* =========================================
+   07. INITIALIZATION FORM
+========================================= */
 
-function renderModelEvaluation() {
-  return `
-    <section class="mission-panel">
-      <div class="terminal-window">
-        <div class="terminal-header">
-          <span class="terminal-dot red"></span>
-          <span class="terminal-dot yellow"></span>
-          <span class="terminal-dot green"></span>
-          <span class="terminal-title">model_evaluation.py</span>
-        </div>
+initializationForm.addEventListener("submit", async function(event) {
 
-        <div class="terminal-body">
-          <p class="code-comment"># STAGE 04: MODEL EVALUATION</p>
+  event.preventDefault();
 
-          <p>
-            <span class="code-purple">def</span>
-            <span class="code-green">evaluate_model</span>(subject):
-          </p>
+  // Prevent duplicate submissions.
 
-          <p class="code-indent">
-            chronological_age = ${subjectAge}
-          </p>
-
-          <p class="code-indent">
-            goofiness = "STILL DETECTED"
-          </p>
-
-          <p class="code-indent">
-            smile_effect = "UNQUANTIFIABLE"
-          </p>
-
-          <hr class="terminal-divider">
-
-          <p class="code-comment">
-            # Evaluating the questionable adulthood classifier...
-          </p>
-
-          <div class="terminal-output">
-            <p>&gt; Subject profile loaded.</p>
-            <p>&gt; Chronological age: ${subjectAge}.</p>
-            <p>&gt; Warning: goofiness is not a scientific metric.</p>
-            <p>&gt; Warning: maturity cannot be measured from this dataset.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="mission-card">
-        <p class="section-label">INTERACTIVE MODEL TEST</p>
-
-        <h2>Is the birthday subject officially an adult?</h2>
-
-        <p>
-          The subject has reached the age of ${subjectAge}.
-          However, this questionable model still detects substantial
-          levels of goofiness.
-        </p>
-
-        <p class="code-comment"># Select your prediction:</p>
-
-        <div class="answer-buttons">
-          <button
-            class="answer-button"
-            data-maturity-answer="yes"
-            type="button"
-          >
-            True
-          </button>
-
-          <button
-            class="answer-button"
-            data-maturity-answer="no"
-            type="button"
-          >
-            False
-          </button>
-        </div>
-
-        <div
-          id="maturity-result"
-          class="terminal-output"
-          aria-live="polite"
-        >
-          <p>&gt; Awaiting user input...</p>
-        </div>
-
-        <p class="small-note">
-          This is a playful birthday quiz, not a scientific assessment
-          of maturity.
-        </p>
-      </div>
-    </section>
-  `;
-}
-
-function handleMaturityAnswer(answer) {
-  const result = document.getElementById("maturity-result");
-
-  if (!result) return;
-
-  if (answer === "yes") {
-    result.innerHTML = `
-      <p>&gt; Prediction received: TRUE</p>
-      <p>&gt; Chronological age check: PASSED.</p>
-      <p>&gt; Goofiness check: STILL UNDER INVESTIGATION.</p>
-      <p class="code-green">
-        Result: Adult status confirmed. Seriousness not guaranteed.
-      </p>
-    `;
-  } else {
-    result.innerHTML = `
-      <p>&gt; Prediction received: FALSE</p>
-      <p>&gt; Rechecking chronological age...</p>
-      <p>&gt; Age confirmed: ${subjectAge}.</p>
-      <p class="code-green">
-        Result: The subject is an adult. The model remains suspicious.
-      </p>
-    `;
+  if (initializationComplete || initializeButton.disabled) {
+    return;
   }
 
-  launchConfetti(25);
+  subjectName = nameInput.value.trim();
+
+  subjectAge = Number(ageInput.value);
+
+  // Validate the information.
+
+  if (!subjectName || !Number.isInteger(subjectAge) ||
+      subjectAge < 1 || subjectAge > 120) {
+
+    return;
+  }
+
+  // Lock the form during initialization.
+
+  initializeButton.disabled = true;
+
+  initializeButton.textContent = "INITIALIZING...";
+
+  nameInput.disabled = true;
+  ageInput.disabled = true;
+
+  // Start the terminal sequence.
+
+  await runBootSequence();
+
+  // Hide the form once initialization is complete.
+
+  initializationForm.hidden = true;
+
+  // Update the version.
+
+  versionNumber.textContent =
+    `v${(subjectAge / 10).toFixed(1)}`;
+
+});
+
+
+/* =========================================
+   08. LAUNCH MISSION CONTROL
+========================================= */
+
+startMissionButton.addEventListener("click", function() {
+
+  if (!initializationComplete) {
+    return;
+  }
+
+  bootScreen.hidden = true;
+
+  missionScreen.hidden = false;
+
+  systemStatus.textContent = "MISSION CONTROL ACTIVE";
+
+  // Start with the first objective.
+
+  openMission(0);
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+
+});
+
+
+/* =========================================
+   09. UPDATE PROGRESS
+========================================= */
+
+function updateProgress() {
+
+  const completedCount = visitedMissions.size;
+
+  const percentage = Math.round(
+    (completedCount / missions.length) * 100
+  );
+
+  progressBar.style.width = `${percentage}%`;
+
+  progressText.textContent =
+    `${percentage}% COMPLETE`;
+
+  progressTrack.setAttribute(
+    "aria-valuenow",
+    percentage
+  );
+
 }
 
 
-/* ---------- 14. MISSION 05: INTERPRETATION & INSIGHTS ---------- */
+/* =========================================
+   10. UPDATE OBJECTIVE NAVIGATION
+========================================= */
 
-function renderInsights() {
-  return `
-    <section class="mission-panel">
-      <div class="terminal-window">
-        <div class="terminal-header">
-          <span class="terminal-dot red"></span>
-          <span class="terminal-dot yellow"></span>
-          <span class="terminal-dot green"></span>
-          <span class="terminal-title">insights.R</span>
-        </div>
+function updateObjectiveNavigation() {
 
-        <div class="terminal-body">
-          <p class="code-comment"># STAGE 05: INTERPRET THE RESULTS</p>
+  objectiveItems.forEach((item, index) => {
 
-          <p>
-            <span class="code-purple">library</span>(tidyverse)
-          </p>
-
-          <p>
-            <span class="code-blue">insights</span>
-            <span class="code-purple">&lt;-</span>
-            tibble(
-          </p>
-
-          <p class="code-indent">
-            curiosity = <span class="code-green">"HIGH"</span>,
-          </p>
-
-          <p class="code-indent">
-            ambition = <span class="code-green">"IN DEVELOPMENT"</span>,
-          </p>
-
-          <p class="code-indent">
-            potential = <span class="code-green">"EXPANDING"</span>,
-          </p>
-
-          <p class="code-indent">
-            future = <span class="code-green">"OPEN TO POSSIBILITIES"</span>
-          </p>
-
-          <p>)</p>
-
-          <div class="terminal-output">
-            <p># A tibble: 1 × 4</p>
-            <p>curiosity: HIGH</p>
-            <p>ambition: IN DEVELOPMENT</p>
-            <p>potential: EXPANDING</p>
-            <p>future: OPEN TO POSSIBILITIES</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="insight-grid">
-        <article class="insight-card">
-          <span class="insight-icon">01</span>
-          <h3>Curiosity</h3>
-          <p>
-            Keep asking questions, exploring ideas and learning
-            things that challenge you.
-          </p>
-          <span class="insight-status">STATUS: ACTIVE</span>
-        </article>
-
-        <article class="insight-card">
-          <span class="insight-icon">02</span>
-          <h3>Growth</h3>
-          <p>
-            Every project, competition and difficult problem can
-            teach you something new.
-          </p>
-          <span class="insight-status">STATUS: ONGOING</span>
-        </article>
-
-        <article class="insight-card">
-          <span class="insight-icon">03</span>
-          <h3>Possibility</h3>
-          <p>
-            You do not need every answer at 25. There is still
-            so much to discover.
-          </p>
-          <span class="insight-status">STATUS: UNBOUNDED</span>
-        </article>
-      </div>
-
-      <div class="mission-card">
-        <p class="section-label">INTERPRETATION SUMMARY</p>
-
-        <h2>What does the data actually tell us?</h2>
-
-        <p>
-          A dataset can reveal patterns, but it cannot measure
-          everything that makes a person who they are.
-        </p>
-
-        <p>
-          The observations cannot predict every achievement,
-          opportunity, friendship or beautiful moment waiting
-          in your future.
-        </p>
-
-        <div class="terminal-output">
-          <p>&gt; Analysis complete.</p>
-          <p>&gt; Potential: not limited to model output.</p>
-          <p>&gt; Future: not predetermined.</p>
-          <p>&gt; Recommendation: keep growing.</p>
-        </div>
-      </div>
-    </section>
-  `;
-}
-
-
-/* ---------- 15. MISSION 06: FINAL BIRTHDAY REPORT ---------- */
-
-function renderBirthdayReport() {
-  const safeName = escapeHTML(subjectName);
-
-  return `
-    <section class="mission-panel birthday-report">
-      <div class="terminal-window">
-        <div class="terminal-header">
-          <span class="terminal-dot red"></span>
-          <span class="terminal-dot yellow"></span>
-          <span class="terminal-dot green"></span>
-          <span class="terminal-title">final_report.py</span>
-        </div>
-
-        <div class="terminal-body">
-          <p class="code-comment"># STAGE 06: FINAL REPORT</p>
-
-          <p>
-            <span class="code-purple">def</span>
-            <span class="code-green">generate_birthday_report</span>(subject):
-          </p>
-
-          <p class="code-indent">report = {</p>
-          <p class="code-indent">"subject": "${safeName}",</p>
-          <p class="code-indent">"age": ${subjectAge},</p>
-          <p class="code-indent">"version": "${escapeHTML(projectVersion)}",</p>
-          <p class="code-indent">"status": "READY FOR NEXT CHAPTER"</p>
-          <p class="code-indent">}</p>
-
-          <div class="terminal-output">
-            <p>&gt; Generating final report...</p>
-            <p>&gt; Birthday subject identified.</p>
-            <p>&gt; Personal message compiled.</p>
-            <p>&gt; Prayer module loaded.</p>
-            <p class="code-green">&gt; Report status: COMPLETE.</p>
-          </div>
-        </div>
-      </div>
-
-      <article class="birthday-message-card">
-        <p class="section-label">
-          PERSONAL MESSAGE // ${escapeHTML(projectVersion)}
-        </p>
-
-        <h2>Happy birthday, ${safeName}! 🎂</h2>
-
-        <p>
-          I hope you have a beautiful day and enjoy every moment of it.
-          May God bless you with many more years, filled with joy,
-          prosperity, growth and even greater achievements.
-        </p>
-
-        <p>
-          May your life always be covered by the Lord, and may His
-          protection, grace and favour follow you wherever you go.
-          I pray this new chapter brings you closer to all you're
-          working towards and everything God has in store for you.
-        </p>
-
-        <p>
-          Have an amazing birthday, ${safeName}. 💚
-        </p>
-      </article>
-
-      <div class="terminal-window report-footer">
-        <div class="terminal-header">
-          <span class="terminal-title">report_summary.txt</span>
-        </div>
-
-        <div class="terminal-body">
-          <p class="code-comment"># FINAL OBSERVATIONS</p>
-          <p>Subject: ${safeName}</p>
-          <p>Age: ${subjectAge}</p>
-          <p>Project version: ${escapeHTML(projectVersion)}</p>
-          <p>Potential: STILL DEVELOPING</p>
-          <p>Next chapter: READY TO BEGIN</p>
-
-          <hr class="terminal-divider">
-
-          <p class="code-green">PROCESS COMPLETE. HAPPY BIRTHDAY!</p>
-        </div>
-      </div>
-
-      <p>
-        Six stages processed. One birthday celebrated.
-        The next chapter is yours to write.
-      </p>
-    </section>
-  `;
-}
-
-
-/* ---------- 16. MISSION NAVIGATION ---------- */
-
-function advanceMission() {
-  if (currentMission < TOTAL_MISSIONS - 1) {
-    currentMission += 1;
-
-    maxUnlockedMission = Math.max(
-      maxUnlockedMission,
-      currentMission
+    item.classList.toggle(
+      "active",
+      index === currentMission
     );
 
-    renderMission();
+    item.classList.toggle(
+      "visited",
+      visitedMissions.has(index)
+    );
 
-    if (missionContent) {
-      missionContent.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
+    if (index === currentMission) {
+
+      item.setAttribute("aria-current", "step");
+
+    } else {
+
+      item.removeAttribute("aria-current");
+
     }
-  } else {
-    showFinalCelebration();
-  }
+
+  });
+
 }
 
-function openObjective(index) {
-  if (
-    !Number.isInteger(index) ||
-    index < 0 ||
-    index > maxUnlockedMission ||
-    index >= TOTAL_MISSIONS ||
-    missionCompleted
-  ) {
+
+/* =========================================
+   11. OPEN A MISSION
+========================================= */
+
+function openMission(index) {
+
+  if (index < 0 || index >= missions.length) {
     return;
   }
 
   currentMission = index;
-  renderMission();
-}
 
-document.addEventListener("click", event => {
-  const answerButton = event.target.closest(
-    "[data-maturity-answer]"
-  );
+  const mission = missions[index];
 
-  if (answerButton) {
-    handleMaturityAnswer(answerButton.dataset.maturityAnswer);
-    return;
-  }
+  // Mark this objective as visited.
 
-  const objective = event.target.closest(".objective-item");
+  visitedMissions.add(index);
 
-  if (objective) {
-    openObjective(Number(objective.dataset.objective));
-  }
-});
+  // Update navigation and progress.
 
-document.addEventListener("keydown", event => {
-  const objective = event.target.closest(".objective-item");
-
-  if (
-    objective &&
-    (event.key === "Enter" || event.key === " ")
-  ) {
-    event.preventDefault();
-    openObjective(Number(objective.dataset.objective));
-  }
-});
-
-
-/* ---------- 17. FINAL CELEBRATION ---------- */
-
-function showFinalCelebration() {
-  missionCompleted = true;
+  updateObjectiveNavigation();
 
   updateProgress();
-  updateObjectives();
-  updateSystemStatus("ALL SYSTEMS GO");
 
-  if (!missionContent) return;
+  missionCounter.textContent =
+    `MISSION ${mission.number} / 06`;
 
-  missionContent.innerHTML = `
-    <section class="mission-panel final-screen">
-      <div class="terminal-window">
-        <div class="terminal-header">
-          <span class="terminal-dot red"></span>
-          <span class="terminal-dot yellow"></span>
-          <span class="terminal-dot green"></span>
-          <span class="terminal-title">process_complete.py</span>
-        </div>
+  systemStatus.textContent =
+    `VIEWING MISSION ${mission.number}`;
 
-        <div class="terminal-body">
-          <p class="code-comment"># EXECUTION SUMMARY</p>
-          <p>&gt; Data acquisition: COMPLETE</p>
-          <p>&gt; Data cleaning: COMPLETE</p>
-          <p>&gt; Visualisation: COMPLETE</p>
-          <p>&gt; Model evaluation: COMPLETE</p>
-          <p>&gt; Interpretation: COMPLETE</p>
-          <p>&gt; Birthday report: DELIVERED</p>
+  // Clear previous mission content.
 
-          <hr class="terminal-divider">
+  missionContent.replaceChildren();
 
-          <p class="code-green">
-            Congratulations, ${escapeHTML(subjectName)}!
-          </p>
+  // Create mission label.
 
-          <p>
-            You have reached the end of this mission.
-            Your next chapter is just beginning.
-          </p>
+  const label = document.createElement("p");
 
-          <p class="code-comment"># END OF PROGRAM</p>
-        </div>
-      </div>
+  label.className = "terminal-label";
+  label.textContent = mission.label;
 
-      <h2>MISSION ACCOMPLISHED 🎉</h2>
+  // Create mission heading.
 
-      <p>
-        Happy ${subjectAge}th birthday, ${escapeHTML(subjectName)}!
-      </p>
+  const heading = document.createElement("h2");
 
-      <p>
-        May this year bring you closer to your dreams,
-        with God's grace guiding you along the way.
-      </p>
+  heading.textContent = mission.title;
 
-      <p>
-        Keep learning. Keep growing. Keep becoming.
-      </p>
+  // Create description.
 
-      <button
-        type="button"
-        id="restart-mission-button"
-        class="primary-button"
-      >
-        RUN MISSION AGAIN
-      </button>
-    </section>
-  `;
+  const description = document.createElement("p");
 
-  document.getElementById("restart-mission-button").addEventListener(
-    "click",
-    restartMission
+  description.textContent = mission.description;
+
+  // Create additional details.
+
+  const detail = document.createElement("p");
+
+  detail.textContent = mission.detail;
+
+  // Create objective prompt.
+
+  const prompt = document.createElement("p");
+
+  prompt.className = "mission-prompt";
+  prompt.textContent = mission.prompt;
+
+  // Create navigation controls.
+
+  const controls = document.createElement("div");
+
+  controls.className = "mission-controls";
+
+  if (index > 0) {
+
+    const previousButton = document.createElement("button");
+
+    previousButton.type = "button";
+    previousButton.className = "primary-button";
+
+    previousButton.textContent = "← PREVIOUS";
+
+    previousButton.addEventListener("click", function() {
+      openMission(index - 1);
+    });
+
+    controls.appendChild(previousButton);
+
+  }
+
+  if (index < missions.length - 1) {
+
+    const nextButton = document.createElement("button");
+
+    nextButton.type = "button";
+    nextButton.className = "primary-button";
+
+    nextButton.textContent = "NEXT OBJECTIVE →";
+
+    nextButton.addEventListener("click", function() {
+      openMission(index + 1);
+    });
+
+    controls.appendChild(nextButton);
+
+  } else {
+
+    const finalButton = document.createElement("button");
+
+    finalButton.type = "button";
+    finalButton.className = "primary-button";
+
+    finalButton.textContent = "REVISIT MISSION 01 ↺";
+
+    finalButton.addEventListener("click", function() {
+      openMission(0);
+    });
+
+    controls.appendChild(finalButton);
+
+  }
+
+  // Add everything to the mission area.
+
+  missionContent.append(
+    label,
+    heading,
+    description,
+    detail,
+    prompt,
+    controls
   );
 
-  launchConfetti(120);
+  // Bring the active mission into view.
 
   missionContent.scrollIntoView({
     behavior: "smooth",
     block: "start"
   });
-}
 
-function restartMission() {
-  const audio = document.getElementById("lelo-audio");
-
-  if (audio) {
-    audio.pause();
-    audio.currentTime = 0;
-  }
-
-  currentMission = 0;
-  maxUnlockedMission = 0;
-  missionCompleted = false;
-
-  renderMission();
 }
 
 
-/* ---------- 18. CONFETTI EFFECT ---------- */
+/* =========================================
+   12. OBJECTIVE CLICK EVENTS
+========================================= */
 
-function launchConfetti(amount = 60) {
-  if (!confettiContainer) return;
+objectiveItems.forEach((item, index) => {
 
-  const colours = [
-    "#8b5cf6",
-    "#3b82f6",
-    "#22c55e",
-    "#facc15",
-    "#f9fafb"
-  ];
+  item.addEventListener("click", function() {
 
-  for (let index = 0; index < amount; index++) {
-    const piece = document.createElement("span");
+    openMission(index);
 
-    piece.className = "confetti-piece";
-    piece.style.left = `${Math.random() * 100}%`;
+  });
 
-    piece.style.backgroundColor =
-      colours[Math.floor(Math.random() * colours.length)];
+  // Keyboard accessibility.
 
-    piece.style.animationDelay = `${Math.random() * 1.5}s`;
+  item.addEventListener("keydown", function(event) {
 
-    piece.style.animationDuration =
-      `${2 + Math.random() * 2}s`;
+    if (event.key === "Enter" || event.key === " ") {
 
-    piece.style.setProperty(
-      "--confetti-drift",
-      `${Math.random() * 180 - 90}px`
-    );
+      event.preventDefault();
 
-    confettiContainer.appendChild(piece);
+      openMission(index);
 
-    window.setTimeout(() => {
-      piece.remove();
-    }, 5000);
-  }
-}
+    }
 
+  });
 
-/* ---------- 19. STARTUP ---------- */
-
-document.addEventListener("DOMContentLoaded", () => {
-  initializeProject();
-  updateSystemStatus("AWAITING INITIALIZATION");
 });
+
+
+/* =========================================
+   13. INITIAL SYSTEM STATE
+========================================= */
+
+function initializeSystem() {
+
+  // Start at the top of the boot screen.
+
+  bootScreen.hidden = false;
+
+  missionScreen.hidden = true;
+
+  startMissionButton.hidden = true;
+  startMissionButton.disabled = true;
+
+  // Initialize progress.
+
+  progressBar.style.width = "0%";
+
+  progressText.textContent = "0% COMPLETE";
+
+  progressTrack.setAttribute(
+    "aria-valuenow",
+    "0"
+  );
+
+  missionCounter.textContent = "MISSION 01 / 06";
+
+  systemStatus.textContent = "AWAITING INITIALIZATION";
+
+}
+
+
+// Run when the page loads.
+
+initializeSystem();
